@@ -35,7 +35,6 @@ function App() {
     })
 
     const {
-        data: hash,
         isPending,
         writeContractAsync
     } = useWriteContract()
@@ -55,7 +54,7 @@ function App() {
                         message: 'Notification Title',
                         description:
                             <a href={`${result.data?.chain.blockExplorers?.default.url}/tx/${tx}`} target='_blank'>
-                                {`Tx: ${truncateHex(hash)}`}
+                                {`Tx: ${truncateHex(tx)}`}
                             </a>
                     })
                 }
@@ -80,7 +79,7 @@ function App() {
                         message: 'Notification Title',
                         description:
                             <a href={`${result.data?.chain.blockExplorers?.default.url}/tx/${tx}`} target='_blank'>
-                                {`Tx: ${truncateHex(hash)}`}
+                                {`Tx: ${truncateHex(tx)}`}
                             </a>
                     })
                 }
@@ -184,6 +183,7 @@ function App() {
 export default App
 
 function truncateHex(hexStr: any, keepFirst = 8, keepLast = 8) {
+    if (!hexStr) return;
     if (hexStr.length < keepFirst + keepLast) {
         throw new Error("Hexadecimal string is too short.");
     }
