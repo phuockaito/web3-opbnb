@@ -1,6 +1,5 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
 import './index.css'
 import '@rainbow-me/rainbowkit/styles.css';
 
@@ -12,12 +11,14 @@ import {
 import { WagmiProvider } from 'wagmi';
 import {
     opBNBTestnet,
-    mainnet
+
 } from 'wagmi/chains';
 import {
     QueryClientProvider,
     QueryClient,
 } from "@tanstack/react-query";
+import { BrowserRouter } from 'react-router-dom';
+import App from './App';
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -31,7 +32,7 @@ const queryClient = new QueryClient({
 const config = getDefaultConfig({
     appName: 'My RainbowKit App',
     projectId: 'YOUR_PROJECT_ID',
-    chains: [opBNBTestnet, mainnet],
+    chains: [opBNBTestnet],
 });
 
 
@@ -40,7 +41,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <WagmiProvider config={config}>
             <QueryClientProvider client={queryClient}>
                 <RainbowKitProvider >
-                    <App />
+                    <BrowserRouter>
+                        <div className='max-w-6xl m-auto'>
+                            <App />
+                        </div>
+                    </BrowserRouter>
                 </RainbowKitProvider>
             </QueryClientProvider>
         </WagmiProvider>
