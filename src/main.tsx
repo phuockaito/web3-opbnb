@@ -42,7 +42,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <QueryClientProvider client={queryClient}>
                 <RainbowKitProvider >
                     <BrowserRouter>
-                        <div className='max-w-6xl m-auto'>
+                        <div className='max-w-6xl p-5 m-auto'>
                             <App />
                         </div>
                     </BrowserRouter>
