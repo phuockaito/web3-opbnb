@@ -6,11 +6,12 @@ import { NavMenu } from './components';
 import { useBuy } from './hooks';
 import { MdOutlineSwapVert } from "react-icons/md";
 import BigNumber from 'bignumber.js';
+import { formatNumberPayment } from './constants';
 
 
 function App() {
     const { openConnectModal } = useConnectModal();
-    const { balanceOfUSDT, balanceOfUSDB, allowance, address, isPending, formToken, toToken, handleSwap, handleApprove, handleBuy } = useBuy();
+    const { balanceOfUSDT, balanceOfUSDB, allowance, address, isPending, formToken, toToken, handleSwap, handleApprove, handleBuy, handelMintUSDT } = useBuy();
     const [form] = Form.useForm();
 
     const onFinish = async ({ amount }: any) => {
@@ -66,9 +67,14 @@ function App() {
                                         <p className='text-red-600'>*</p>
                                         <h1>{formToken.name}</h1>
                                     </div>
-                                    <p>{`Balance: ${balanceFormToken}`}</p>
+                                    <p>{`Balance: ${formatNumberPayment(balanceFormToken)}`}</p>
                                 </div>
-                                <InputNumber placeholder='0' controls={false} className='!w-full' />
+                                <InputNumber
+                                    max={balanceFormToken}
+                                    placeholder='0'
+                                    controls={false}
+                                    className='!w-full'
+                                />
                             </div>
                         </Form.Item>
                         <div className='flex justify-center cursor-pointer'>
@@ -77,7 +83,7 @@ function App() {
                         <div>
                             <div className='flex items-center justify-between gap-10 mb-2'>
                                 <p>{toToken.name}</p>
-                                <p>{`Balance: ${balanceToToken}`}</p>
+                                <p>{`Balance: ${formatNumberPayment(balanceToToken)}`}</p>
                             </div>
                             <Form.Item
                                 label=""
@@ -91,11 +97,23 @@ function App() {
                                 {
                                     !address
                                         ? <Button className='!w-full' onClick={openConnectModal} type="primary"> Connect Wallet</Button>
-                                        : <Button className='!w-full !capitalize'
-                                            loading={isPending}
-                                            type="primary" htmlType="submit">
-                                            {formToken.type}
-                                        </Button>
+                                        : <div className='flex flex-col gap-4'>
+                                            <Button
+                                                className='!w-full !capitalize'
+                                                loading={isPending}
+                                                type="primary" htmlType="submit"
+                                            >
+                                                {formToken.type}
+                                            </Button>
+                                            <Button
+                                                onClick={() => handelMintUSDT(100)}
+                                                type='dashed'
+                                                className='!w-full !capitalize'
+                                                loading={isPending}
+                                            >
+                                                Mint USDT
+                                            </Button>
+                                        </div>
                                 }
                             </div>
                         </Form.Item>

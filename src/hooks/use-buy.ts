@@ -2,7 +2,7 @@
 import * as React from 'react'
 import { useAccount, useReadContracts, useWalletClient, useWriteContract } from 'wagmi';
 import { abiUSDB, abiUSDT } from '../abi';
-import { formatNumberPayment, MAX_INT, TOKEN_USDB, TOKEN_USDT } from '../constants';
+import { MAX_INT, TOKEN_USDB, TOKEN_USDT } from '../constants';
 import BigNumber from 'bignumber.js';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNotification } from './use-notification';
@@ -92,15 +92,15 @@ export const useBuy = () => {
     const balanceOfUSDT = React.useMemo(() => {
         if (resultUSDT.status === "pending" || !resultUSDT.data?.length) return 0;
         const [balance, decimals] = resultUSDT.data;
-        const amountUSDT = new BigNumber(balance.result as string).dividedBy(new BigNumber(10).pow(decimals.result as string)).toString();
-        return amountUSDT;
+        const amount = new BigNumber(balance.result as string).dividedBy(new BigNumber(10).pow(decimals.result as string)).toString();
+        return new BigNumber(amount).decimalPlaces(5, 1).toString();
     }, [resultUSDT.status, resultUSDT.data]);
 
     const balanceOfUSDB = React.useMemo(() => {
         if (resultUSDB.status === "pending" || !resultUSDB.data?.length) return 0;
         const [balance, decimals] = resultUSDB.data;
-        const amountUSDT = new BigNumber(balance.result as string).dividedBy(new BigNumber(10).pow(decimals.result as string)).toString();
-        return amountUSDT;
+        const amount = new BigNumber(balance.result as string).dividedBy(new BigNumber(10).pow(decimals.result as string)).toString();
+        return new BigNumber(amount).decimalPlaces(5, 1).toString();
     }, [resultUSDB.status, resultUSDB.data]);
 
     const allowance = React.useMemo(() => {
@@ -134,6 +134,28 @@ export const useBuy = () => {
         }
     }, [handleNotificationError, handleNotificationSuccess, queryClient, writeContractAsync]);
 
+    const handelMintUSDT = React.useCallback(async (amount: number) => {
+        try {
+            setLoading(true);
+            const amountUSDT = new BigNumber(amount).multipliedBy(new BigNumber(10).pow(18)).toString();
+            const tx = await writeContractAsync({
+                address: TOKEN_USDT,
+                abi: abiUSDT,
+                functionName: "mint",
+                args: [account.address, amountUSDT],
+            });
+            if (tx) {
+                await publicClient.waitForTransactionReceipt({ hash: tx });
+                await queryClient.invalidateQueries()
+                handleNotificationSuccess(tx, `Mint ${amount} USDT success`)
+            }
+            setLoading(false);
+        } catch (error) {
+            setLoading(false);
+            handleNotificationError(error)
+        }
+    }, [account.address, handleNotificationError, handleNotificationSuccess, queryClient, writeContractAsync]);
+
     const handleBuy = React.useCallback(async (amount: number, type: string) => {
         try {
             setLoading(true);
@@ -162,8 +184,8 @@ export const useBuy = () => {
     };
 
     return {
-        balanceOfUSDT: formatNumberPayment(balanceOfUSDT),
-        balanceOfUSDB: formatNumberPayment(balanceOfUSDB),
+        balanceOfUSDT,
+        balanceOfUSDB,
         address: account.address,
         isPending: loading,
         allowance,
@@ -173,6 +195,7 @@ export const useBuy = () => {
         handleTx,
         handleApprove,
         handleBuy,
-        handleSwap
+        handleSwap,
+        handelMintUSDT
     }
 }

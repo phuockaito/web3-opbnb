@@ -10,6 +10,7 @@ export const formatNumberPayment = (price: number | string, minimum = 0, maximum
     return Number(new BigNumber(price).decimalPlaces(5, 1).toString()).toLocaleString('en-US', { minimumFractionDigits: minimum, maximumFractionDigits: maximum })
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function handleTruncateHex(hexStr: any, keepFirst = 8, keepLast = 8) {
     if (!hexStr) return;
     if (hexStr.length < keepFirst + keepLast) {
