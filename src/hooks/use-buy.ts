@@ -40,48 +40,40 @@ export const useBuy = () => {
     const formToken = arrayToken[0];
     const toToken = arrayToken[1];
 
-    const resultUSDT = useReadContracts({
+    const resultToken = useReadContracts({
         contracts: [
             {
                 abi: abiUSDT,
                 address: TOKEN_USDT,
-                functionName: 'balanceOf',
+                functionName: 'balanceOf', // 0
                 args: [account.address],
             },
             {
                 abi: abiUSDT,
                 address: TOKEN_USDT,
-                functionName: 'decimals',
+                functionName: 'decimals', // 1
             },
             {
                 abi: abiUSDT,
                 address: TOKEN_USDT,
-                functionName: 'allowance',
+                functionName: 'allowance', // 2
                 args: [account.address, TOKEN_USDB],
-            }
-        ],
-        query: {
-            enabled: !!account.address,
-        }
-    });
-
-    const resultUSDB = useReadContracts({
-        contracts: [
+            },
             {
                 abi: abiUSDB,
                 address: TOKEN_USDB,
-                functionName: 'balanceOf',
+                functionName: 'balanceOf', // 3
                 args: [account.address],
             },
             {
                 abi: abiUSDB,
                 address: TOKEN_USDB,
-                functionName: 'decimals',
+                functionName: 'decimals', // 4
             },
             {
                 abi: abiUSDB,
                 address: TOKEN_USDB,
-                functionName: 'allowance',
+                functionName: 'allowance', // 5
                 args: [account.address, TOKEN_USDT],
             },
         ],
@@ -90,24 +82,23 @@ export const useBuy = () => {
         }
     });
 
+
     const balanceOfUSDT = React.useMemo(() => {
-        if (resultUSDT.status === "pending" || !resultUSDT.data?.length) return 0;
-        const [balance, decimals] = resultUSDT.data;
-        const amount = new BigNumber(balance.result as string).dividedBy(new BigNumber(10).pow(decimals.result as string)).toString();
+        if (resultToken.status === "pending" || !resultToken.data?.length) return 0;
+        const amount = new BigNumber(resultToken.data[0].result as string).dividedBy(new BigNumber(10).pow(resultToken.data[1].result as string)).toString();
         return new BigNumber(amount).decimalPlaces(5, 1).toString();
-    }, [resultUSDT.status, resultUSDT.data]);
+    }, [resultToken.status, resultToken.data]);
 
     const balanceOfUSDB = React.useMemo(() => {
-        if (resultUSDB.status === "pending" || !resultUSDB.data?.length) return 0;
-        const [balance, decimals] = resultUSDB.data;
-        const amount = new BigNumber(balance.result as string).dividedBy(new BigNumber(10).pow(decimals.result as string)).toString();
+        if (resultToken.status === "pending" || !resultToken.data?.length) return 0;
+        const amount = new BigNumber(resultToken.data[3].result as string).dividedBy(new BigNumber(10).pow(resultToken.data[4].result as string)).toString();
         return new BigNumber(amount).decimalPlaces(5, 1).toString();
-    }, [resultUSDB.status, resultUSDB.data]);
+    }, [resultToken.status, resultToken.data]);
 
     const allowance = React.useMemo(() => {
-        if (resultUSDT.status === "pending" || !resultUSDT.data?.length || resultUSDB.status === "pending" || !resultUSDB.data?.length) return 0;
-        return formToken.type === "buy" ? resultUSDT.data[2].result : resultUSDB.data[2].result;
-    }, [formToken.type, resultUSDB.data, resultUSDB.status, resultUSDT.data, resultUSDT.status]);
+        if (resultToken.status === "pending" || !resultToken.data?.length) return 0;
+        return formToken.type === "buy" ? resultToken.data[2].result : resultToken.data[5].result;
+    }, [formToken.type, resultToken.data, resultToken.status]);
 
     const handleTx = React.useCallback((tx: string) => {
         if (!walletClient.data) return;
