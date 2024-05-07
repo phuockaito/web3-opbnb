@@ -1,29 +1,33 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { Button, Form, InputNumber } from 'antd';
 
 import { NavMenu } from './components';
 import { useBuy } from './hooks';
+import { MdOutlineSwapVert } from "react-icons/md";
+import BigNumber from 'bignumber.js';
 
-
-interface Props {
-    USDB: number;
-    USDT: number;
-}
 
 function App() {
     const { openConnectModal } = useConnectModal();
-    const { balanceOfUSDT, balanceOfUSDB, allowance, address, isPending, handleApprove, handleBuy } = useBuy();
-    const [form] = Form.useForm<Props>();
+    const { balanceOfUSDT, balanceOfUSDB, allowance, address, isPending, formToken, toToken, handleSwap, handleApprove, handleBuy } = useBuy();
+    const [form] = Form.useForm();
 
-    const onFinish = async ({ USDB }: Props) => {
-        if (!allowance) {
-            handleApprove()
+    const onFinish = async ({ amount }: any) => {
+        const isAllowance = new BigNumber(allowance as string).isGreaterThan(new BigNumber(amount));
+        if (!isAllowance) {
+            await handleApprove(formToken.address, toToken.address)
+            await handleBuy(amount, formToken.type);
+            form.resetFields();
         }
         else {
-            await handleBuy(USDB);
+            await handleBuy(amount, formToken.type);
             form.resetFields();
-        };
+        }
     }
+
+    const balanceFormToken = formToken.name === "USDT" ? balanceOfUSDT : balanceOfUSDB;
+    const balanceToToken = toToken.name === "USDB" ? balanceOfUSDB : balanceOfUSDT;
 
     return (
         <>
@@ -42,11 +46,11 @@ function App() {
                         <Form.Item
                             className=''
                             label=""
-                            name="USDT"
+                            name="amount"
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Please input your USDT!',
+                                    message: `Please input your ${formToken.name}!`,
                                 },
                                 ({ setFieldValue }) => ({
                                     validator(_, value) {
@@ -60,17 +64,20 @@ function App() {
                                 <div className='flex items-center justify-between gap-10'>
                                     <div className='flex items-center gap-0.5'>
                                         <p className='text-red-600'>*</p>
-                                        <h1>USDT</h1>
+                                        <h1>{formToken.name}</h1>
                                     </div>
-                                    <p>{`Balance: ${balanceOfUSDT}`}</p>
+                                    <p>{`Balance: ${balanceFormToken}`}</p>
                                 </div>
                                 <InputNumber placeholder='0' controls={false} className='!w-full' />
                             </div>
                         </Form.Item>
+                        <div className='flex justify-center cursor-pointer'>
+                            <MdOutlineSwapVert onClick={handleSwap} size={23} />
+                        </div>
                         <div>
                             <div className='flex items-center justify-between gap-10 mb-2'>
-                                <p>USDB</p>
-                                <p>{`Balance: ${balanceOfUSDB}`}</p>
+                                <p>{toToken.name}</p>
+                                <p>{`Balance: ${balanceToToken}`}</p>
                             </div>
                             <Form.Item
                                 label=""
@@ -84,12 +91,10 @@ function App() {
                                 {
                                     !address
                                         ? <Button className='!w-full' onClick={openConnectModal} type="primary"> Connect Wallet</Button>
-                                        : <Button className='!w-full'
+                                        : <Button className='!w-full !capitalize'
                                             loading={isPending}
                                             type="primary" htmlType="submit">
-                                            {
-                                                !allowance ? "Approve" : "Buy"
-                                            }
+                                            {formToken.type}
                                         </Button>
                                 }
                             </div>

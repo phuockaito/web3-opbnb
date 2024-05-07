@@ -8,7 +8,7 @@ export const useNotification = () => {
         return notification["success"]({
             message: message || 'Notification Title',
             description:
-                <a href={handleTruncateHex(tx)} target='_blank'>
+                <a href={`https://testnet.opbnbscan.com/tx/${tx}`} target='_blank'>
                     {`Tx: ${handleTruncateHex(tx)}`}
                 </a>
         })

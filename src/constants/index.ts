@@ -5,7 +5,7 @@ export const TOKEN_USDB = "0x9449ff3E4d658018e183FD5aF304c14913bD8c25"
 export const MAX_INT = "115792089237316195423570985008687907853269984665640564039457584007913129639935"
 export const NUMBER_ALLOWANCE = "115792089237316195423570985008687907853269984665640564039457584007913129639935n"
 
-export const formatNumberPayment = (price: number | string, minimum = 2, maximum = 2) => {
+export const formatNumberPayment = (price: number | string, minimum = 0, maximum = 0) => {
     if (!price) return 0;
     return Number(new BigNumber(price).decimalPlaces(5, 1).toString()).toLocaleString('en-US', { minimumFractionDigits: minimum, maximumFractionDigits: maximum })
 }

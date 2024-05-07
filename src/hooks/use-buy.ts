@@ -1,12 +1,30 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from 'react'
-import { useAccount, useReadContracts, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from 'wagmi';
+import { useAccount, useReadContracts, useWalletClient, useWriteContract } from 'wagmi';
 import { abiUSDB, abiUSDT } from '../abi';
 import { formatNumberPayment, MAX_INT, TOKEN_USDB, TOKEN_USDT } from '../constants';
 import BigNumber from 'bignumber.js';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNotification } from './use-notification';
 import { publicClient } from '../client';
-import { getContract } from 'viem';
+
+interface TOKENS {
+    name: string;
+    address: string;
+    type: string;
+}
+
+const tokenUsdt = {
+    name: "USDT",
+    address: TOKEN_USDT,
+    type: "buy"
+}
+
+const tokenUsdb: TOKENS = {
+    name: "USDB",
+    address: TOKEN_USDB,
+    type: "sell"
+}
 
 export const useBuy = () => {
     const { handleNotificationError, handleNotificationSuccess } = useNotification();
@@ -15,10 +33,11 @@ export const useBuy = () => {
     const walletClient = useWalletClient()
     const [loading, setLoading] = React.useState(false);
 
-    const contract = getContract({ address: TOKEN_USDT, abi: abiUSDT, client: publicClient });
+    const [arrayToken, setArrayToken] = React.useState<TOKENS[]>([tokenUsdt, tokenUsdb]);
+    const formToken = arrayToken[0];
+    const toToken = arrayToken[1];
 
-
-    const { data: resultBalanceOfUSDT, status } = useReadContracts({
+    const resultUSDT = useReadContracts({
         contracts: [
             {
                 abi: abiUSDT,
@@ -43,7 +62,7 @@ export const useBuy = () => {
         }
     });
 
-    const resultBalanceOfUSDB = useReadContracts({
+    const resultUSDB = useReadContracts({
         contracts: [
             {
                 abi: abiUSDB,
@@ -56,6 +75,12 @@ export const useBuy = () => {
                 address: TOKEN_USDB,
                 functionName: 'decimals',
             },
+            {
+                abi: abiUSDB,
+                address: TOKEN_USDB,
+                functionName: 'allowance',
+                args: [account.address, TOKEN_USDT],
+            },
         ],
         query: {
             enabled: !!account.address,
@@ -65,37 +90,37 @@ export const useBuy = () => {
     const { writeContractAsync } = useWriteContract();
 
     const balanceOfUSDT = React.useMemo(() => {
-        if (status === "pending" || !resultBalanceOfUSDT?.length) return 0;
-        const [balance, decimals] = resultBalanceOfUSDT;
+        if (resultUSDT.status === "pending" || !resultUSDT.data?.length) return 0;
+        const [balance, decimals] = resultUSDT.data;
         const amountUSDT = new BigNumber(balance.result as string).dividedBy(new BigNumber(10).pow(decimals.result as string)).toString();
         return amountUSDT;
-    }, [status, resultBalanceOfUSDT]);
+    }, [resultUSDT.status, resultUSDT.data]);
 
     const balanceOfUSDB = React.useMemo(() => {
-        if (resultBalanceOfUSDB.status === "pending" || !resultBalanceOfUSDB.data?.length) return 0;
-        const [balance, decimals] = resultBalanceOfUSDB.data;
+        if (resultUSDB.status === "pending" || !resultUSDB.data?.length) return 0;
+        const [balance, decimals] = resultUSDB.data;
         const amountUSDT = new BigNumber(balance.result as string).dividedBy(new BigNumber(10).pow(decimals.result as string)).toString();
         return amountUSDT;
-    }, [status, resultBalanceOfUSDT]);
+    }, [resultUSDB.status, resultUSDB.data]);
 
     const allowance = React.useMemo(() => {
-        if (status === "pending" || !resultBalanceOfUSDT?.length) return 0;
-        return resultBalanceOfUSDT[2].result;
-    }, [status, resultBalanceOfUSDT]);
+        if (resultUSDT.status === "pending" || !resultUSDT.data?.length || resultUSDB.status === "pending" || !resultUSDB.data?.length) return 0;
+        return formToken.type === "buy" ? resultUSDT.data[2].result : resultUSDB.data[2].result;
+    }, [formToken.type, resultUSDB.data, resultUSDB.status, resultUSDT.data, resultUSDT.status]);
 
     const handleTx = React.useCallback((tx: string) => {
         if (!walletClient.data) return;
         return `${walletClient?.data?.chain?.blockExplorers?.default?.url}/tx/${tx}`;
     }, [walletClient]);
 
-    const handleApprove = React.useCallback(async () => {
+    const handleApprove = React.useCallback(async (token: string, spender: string) => {
         try {
             setLoading(true);
             const tx = await writeContractAsync({
-                address: TOKEN_USDT,
+                address: token as `0x${string}`,
                 abi: abiUSDT,
                 functionName: 'approve',
-                args: [TOKEN_USDB, MAX_INT],
+                args: [spender, MAX_INT],
             });
             if (tx) {
                 await publicClient.waitForTransactionReceipt({ hash: tx });
@@ -107,21 +132,21 @@ export const useBuy = () => {
             setLoading(false);
             return handleNotificationError(error)
         }
-    }, []);
+    }, [handleNotificationError, handleNotificationSuccess, queryClient, writeContractAsync]);
 
-    const handleBuy = React.useCallback(async (amount: number) => {
+    const handleBuy = React.useCallback(async (amount: number, type: string) => {
         try {
             setLoading(true);
             const amountUSDT = new BigNumber(amount).multipliedBy(new BigNumber(10).pow(18)).toString();
             const tx = await writeContractAsync({
                 address: TOKEN_USDB,
                 abi: abiUSDB,
-                functionName: "buy",
+                functionName: type,
                 args: [TOKEN_USDT, amountUSDT],
             });
             if (tx) {
                 await publicClient.waitForTransactionReceipt({ hash: tx });
-                queryClient.invalidateQueries()
+                await queryClient.invalidateQueries()
                 handleNotificationSuccess(tx, `Buy ${amount} USDT success`)
             }
             setLoading(false);
@@ -129,7 +154,12 @@ export const useBuy = () => {
             setLoading(false);
             handleNotificationError(error)
         }
-    }, [])
+    }, [handleNotificationError, handleNotificationSuccess, queryClient, writeContractAsync]);
+
+    const handleSwap = () => {
+        const newData = [...arrayToken];
+        setArrayToken(newData.reverse());
+    };
 
     return {
         balanceOfUSDT: formatNumberPayment(balanceOfUSDT),
@@ -137,9 +167,12 @@ export const useBuy = () => {
         address: account.address,
         isPending: loading,
         allowance,
+        formToken,
+        toToken,
         writeContractAsync,
         handleTx,
         handleApprove,
-        handleBuy
+        handleBuy,
+        handleSwap
     }
 }
