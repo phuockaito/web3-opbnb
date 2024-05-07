@@ -11,7 +11,7 @@ import { formatNumberPayment } from './constants';
 
 function App() {
     const { openConnectModal } = useConnectModal();
-    const { balanceOfUSDT, balanceOfUSDB, allowance, address, isPending, formToken, toToken, handleSwap, handleApprove, handleBuy, handelMintUSDT } = useBuy();
+    const { balanceOfUSDT, balanceOfUSDB, allowance, address, isPending, formToken, toToken, handleSwap, handleApprove, handleBuy, handelMintUSDT, loadingMintUSDT } = useBuy();
     const [form] = Form.useForm();
 
     const onFinish = async ({ amount }: any) => {
@@ -109,7 +109,7 @@ function App() {
                                                 onClick={() => handelMintUSDT(100)}
                                                 type='dashed'
                                                 className='!w-full !capitalize'
-                                                loading={isPending}
+                                                loading={loadingMintUSDT}
                                             >
                                                 Mint USDT
                                             </Button>

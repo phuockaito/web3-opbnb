@@ -27,11 +27,13 @@ const tokenUsdb: TOKENS = {
 }
 
 export const useBuy = () => {
-    const { handleNotificationError, handleNotificationSuccess } = useNotification();
+    const contractAsync = useWriteContract();
     const account = useAccount();
     const queryClient = useQueryClient()
     const walletClient = useWalletClient()
+    const { handleNotificationError, handleNotificationSuccess } = useNotification();
     const [loading, setLoading] = React.useState(false);
+    const [loadingMintUSDT, setLoadingMintUSDT] = React.useState(false);
 
     const [arrayToken, setArrayToken] = React.useState<TOKENS[]>([tokenUsdt, tokenUsdb]);
     const formToken = arrayToken[0];
@@ -87,8 +89,6 @@ export const useBuy = () => {
         }
     });
 
-    const { writeContractAsync } = useWriteContract();
-
     const balanceOfUSDT = React.useMemo(() => {
         if (resultUSDT.status === "pending" || !resultUSDT.data?.length) return 0;
         const [balance, decimals] = resultUSDT.data;
@@ -116,7 +116,7 @@ export const useBuy = () => {
     const handleApprove = React.useCallback(async (token: string, spender: string) => {
         try {
             setLoading(true);
-            const tx = await writeContractAsync({
+            const tx = await contractAsync.writeContractAsync({
                 address: token as `0x${string}`,
                 abi: abiUSDT,
                 functionName: 'approve',
@@ -132,13 +132,13 @@ export const useBuy = () => {
             setLoading(false);
             return handleNotificationError(error)
         }
-    }, [handleNotificationError, handleNotificationSuccess, queryClient, writeContractAsync]);
+    }, [handleNotificationError, handleNotificationSuccess, queryClient, contractAsync]);
 
     const handelMintUSDT = React.useCallback(async (amount: number) => {
         try {
-            setLoading(true);
+            setLoadingMintUSDT(true);
             const amountUSDT = new BigNumber(amount).multipliedBy(new BigNumber(10).pow(18)).toString();
-            const tx = await writeContractAsync({
+            const tx = await contractAsync.writeContractAsync({
                 address: TOKEN_USDT,
                 abi: abiUSDT,
                 functionName: "mint",
@@ -149,18 +149,18 @@ export const useBuy = () => {
                 await queryClient.invalidateQueries()
                 handleNotificationSuccess(tx, `Mint ${amount} USDT success`)
             }
-            setLoading(false);
+            setLoadingMintUSDT(false);
         } catch (error) {
-            setLoading(false);
             handleNotificationError(error)
+            setLoadingMintUSDT(false);
         }
-    }, [account.address, handleNotificationError, handleNotificationSuccess, queryClient, writeContractAsync]);
+    }, [account.address, handleNotificationError, handleNotificationSuccess, queryClient, contractAsync]);
 
     const handleBuy = React.useCallback(async (amount: number, type: string) => {
         try {
             setLoading(true);
             const amountUSDT = new BigNumber(amount).multipliedBy(new BigNumber(10).pow(18)).toString();
-            const tx = await writeContractAsync({
+            const tx = await contractAsync.writeContractAsync({
                 address: TOKEN_USDB,
                 abi: abiUSDB,
                 functionName: type,
@@ -176,7 +176,7 @@ export const useBuy = () => {
             setLoading(false);
             handleNotificationError(error)
         }
-    }, [handleNotificationError, handleNotificationSuccess, queryClient, writeContractAsync]);
+    }, [handleNotificationError, handleNotificationSuccess, queryClient, contractAsync]);
 
     const handleSwap = () => {
         const newData = [...arrayToken];
@@ -191,7 +191,7 @@ export const useBuy = () => {
         allowance,
         formToken,
         toToken,
-        writeContractAsync,
+        loadingMintUSDT,
         handleTx,
         handleApprove,
         handleBuy,
