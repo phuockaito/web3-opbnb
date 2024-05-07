@@ -2,11 +2,12 @@
 import * as React from 'react'
 import { useAccount, useReadContracts, useWalletClient, useWriteContract } from 'wagmi';
 import { abiUSDB, abiUSDT } from '../abi';
-import { MAX_INT, TOKEN_USDB, TOKEN_USDT } from '../constants';
+import { TOKEN_USDB, TOKEN_USDT } from '../constants';
 import BigNumber from 'bignumber.js';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNotification } from './use-notification';
 import { publicClient } from '../client';
+import { maxUint256 } from 'viem';
 
 interface TOKENS {
     name: string;
@@ -120,7 +121,7 @@ export const useBuy = () => {
                 address: token as `0x${string}`,
                 abi: abiUSDT,
                 functionName: 'approve',
-                args: [spender, MAX_INT],
+                args: [spender, maxUint256],
             });
             if (tx) {
                 await publicClient.waitForTransactionReceipt({ hash: tx });
