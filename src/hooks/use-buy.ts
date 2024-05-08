@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from 'react'
-import { useAccount, useReadContracts, useWalletClient, useWriteContract } from 'wagmi';
+import { useAccount, useReadContracts, useWriteContract } from 'wagmi';
 import BigNumber from 'bignumber.js';
 import { useQueryClient } from '@tanstack/react-query';
 import { maxUint256 } from 'viem';
@@ -40,7 +40,6 @@ export const useBuy = () => {
     const contractAsync = useWriteContract();
     const account = useAccount();
     const queryClient = useQueryClient()
-    const walletClient = useWalletClient()
     const { handleNotificationError, handleNotificationSuccess } = useNotification();
     const [loading, setLoading] = React.useState(false);
     const [loadingMintUSDT, setLoadingMintUSDT] = React.useState(false);
@@ -94,11 +93,6 @@ export const useBuy = () => {
         if (resultToken.status === "pending" || !resultToken.data) return 0;
         return formToken.type === "buy" ? resultToken.data.allowanceUsdt : resultToken.data.balanceUsdb;
     }, [formToken.type, resultToken]);
-
-    const handleTx = React.useCallback((tx: string) => {
-        if (!walletClient.data) return;
-        return `${walletClient?.data?.chain?.blockExplorers?.default?.url}/tx/${tx}`;
-    }, [walletClient]);
 
     const handleApprove = React.useCallback(async (token: string, spender: string) => {
         try {
@@ -188,7 +182,6 @@ export const useBuy = () => {
         formToken,
         toToken,
         loadingMintUSDT,
-        handleTx,
         handleApprove,
         handleBuy,
         handleSwap,
