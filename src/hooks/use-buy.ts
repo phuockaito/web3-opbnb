@@ -1,18 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from 'react'
 import { useAccount, useReadContracts, useWalletClient, useWriteContract } from 'wagmi';
-import { abiUSDB, abiUSDT } from '../abi';
-import { TOKEN_USDB, TOKEN_USDT } from '../constants';
 import BigNumber from 'bignumber.js';
 import { useQueryClient } from '@tanstack/react-query';
+import { maxUint256 } from 'viem';
+import { formatEther } from 'ethers';
+
+import { abiUSDB, abiUSDT } from '../abi';
+import { TOKEN_USDB, TOKEN_USDT } from '../constants';
 import { useNotification } from './use-notification';
 import { publicClient } from '../client';
-import { maxUint256 } from 'viem';
 
 interface TOKENS {
     name: string;
     address: string;
     type: string;
+}
+
+interface ResultTokenType {
+    balanceUsdt: string;
+    allowanceUsdt: unknown;
+    balanceUsdb: string;
+    allowanceUsdb: unknown;
 }
 
 const tokenUsdt = {
@@ -45,60 +54,46 @@ export const useBuy = () => {
             {
                 abi: abiUSDT,
                 address: TOKEN_USDT,
-                functionName: 'balanceOf', // 0
+                functionName: 'balanceOf',
                 args: [account.address],
             },
             {
                 abi: abiUSDT,
                 address: TOKEN_USDT,
-                functionName: 'decimals', // 1
-            },
-            {
-                abi: abiUSDT,
-                address: TOKEN_USDT,
-                functionName: 'allowance', // 2
+                functionName: 'allowance',
                 args: [account.address, TOKEN_USDB],
             },
             {
                 abi: abiUSDB,
                 address: TOKEN_USDB,
-                functionName: 'balanceOf', // 3
+                functionName: 'balanceOf',
                 args: [account.address],
             },
             {
                 abi: abiUSDB,
                 address: TOKEN_USDB,
-                functionName: 'decimals', // 4
-            },
-            {
-                abi: abiUSDB,
-                address: TOKEN_USDB,
-                functionName: 'allowance', // 5
+                functionName: 'allowance',
                 args: [account.address, TOKEN_USDT],
             },
         ],
         query: {
             enabled: !!account.address,
+            select: (data): ResultTokenType => {
+                const [balanceUsdt, allowanceUsdt, balanceUsdb, allowanceUsdb] = data;
+                return {
+                    balanceUsdt: new BigNumber(formatEther(balanceUsdt.result as string)).decimalPlaces(5, 1).toString(),
+                    allowanceUsdt: allowanceUsdt.result,
+                    balanceUsdb: new BigNumber(formatEther(balanceUsdb.result as string)).decimalPlaces(5, 1).toString(),
+                    allowanceUsdb: allowanceUsdb.result
+                }
+            }
         }
     });
 
-
-    const balanceOfUSDT = React.useMemo(() => {
-        if (resultToken.status === "pending" || !resultToken.data?.length) return 0;
-        const amount = new BigNumber(resultToken.data[0].result as string).dividedBy(new BigNumber(10).pow(resultToken.data[1].result as string)).toString();
-        return new BigNumber(amount).decimalPlaces(5, 1).toString();
-    }, [resultToken.status, resultToken.data]);
-
-    const balanceOfUSDB = React.useMemo(() => {
-        if (resultToken.status === "pending" || !resultToken.data?.length) return 0;
-        const amount = new BigNumber(resultToken.data[3].result as string).dividedBy(new BigNumber(10).pow(resultToken.data[4].result as string)).toString();
-        return new BigNumber(amount).decimalPlaces(5, 1).toString();
-    }, [resultToken.status, resultToken.data]);
-
     const allowance = React.useMemo(() => {
-        if (resultToken.status === "pending" || !resultToken.data?.length) return 0;
-        return formToken.type === "buy" ? resultToken.data[2].result : resultToken.data[5].result;
-    }, [formToken.type, resultToken.data, resultToken.status]);
+        if (resultToken.status === "pending" || !resultToken.data) return 0;
+        return formToken.type === "buy" ? resultToken.data.allowanceUsdt : resultToken.data.balanceUsdb;
+    }, [formToken.type, resultToken]);
 
     const handleTx = React.useCallback((tx: string) => {
         if (!walletClient.data) return;
@@ -122,7 +117,10 @@ export const useBuy = () => {
             setLoading(false);
         } catch (error: any) {
             setLoading(false);
-            return handleNotificationError(error)
+            const stringify = JSON.stringify(error);
+            const parseError = JSON.parse(stringify);
+            console.log(parseError)
+            handleNotificationError(parseError?.shortMessage)
         }
     }, [handleNotificationError, handleNotificationSuccess, queryClient, contractAsync]);
 
@@ -143,7 +141,10 @@ export const useBuy = () => {
             }
             setLoadingMintUSDT(false);
         } catch (error) {
-            handleNotificationError(error)
+            const stringify = JSON.stringify(error);
+            const parseError = JSON.parse(stringify);
+            console.log(parseError)
+            handleNotificationError(parseError?.shortMessage)
             setLoadingMintUSDT(false);
         }
     }, [account.address, handleNotificationError, handleNotificationSuccess, queryClient, contractAsync]);
@@ -165,8 +166,11 @@ export const useBuy = () => {
             }
             setLoading(false);
         } catch (error) {
+            const stringify = JSON.stringify(error);
+            const parseError = JSON.parse(stringify);
+            console.log(parseError)
+            handleNotificationError(parseError?.shortMessage)
             setLoading(false);
-            handleNotificationError(error)
         }
     }, [handleNotificationError, handleNotificationSuccess, queryClient, contractAsync]);
 
@@ -176,8 +180,8 @@ export const useBuy = () => {
     };
 
     return {
-        balanceOfUSDT,
-        balanceOfUSDB,
+        balanceOfUSDT: resultToken.data?.balanceUsdt || 0,
+        balanceOfUSDB: resultToken.data?.balanceUsdb || 0,
         address: account.address,
         isPending: loading,
         allowance,

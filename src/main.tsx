@@ -17,7 +17,6 @@ import {
     QueryClientProvider,
     QueryClient,
 } from "@tanstack/react-query";
-import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 
 const queryClient = new QueryClient({
@@ -41,11 +40,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <WagmiProvider config={config}>
             <QueryClientProvider client={queryClient}>
                 <RainbowKitProvider >
-                    <BrowserRouter>
-                        <div className='max-w-6xl p-5 m-auto'>
-                            <App />
-                        </div>
-                    </BrowserRouter>
+                    <div className='max-w-6xl p-5 m-auto'>
+                        <App />
+                    </div>
                 </RainbowKitProvider>
             </QueryClientProvider>
         </WagmiProvider>
