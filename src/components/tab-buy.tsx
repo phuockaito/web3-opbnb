@@ -1,15 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { Button, Form, InputNumber } from 'antd';
 
 import { MdOutlineSwapVert } from "react-icons/md";
 import BigNumber from 'bignumber.js';
 import { formatNumberPayment, NAME_TYPE_BUY } from '../constants';
 import { useBuy } from '../hooks';
+import { useAccount } from 'wagmi';
+import { ButtonConnect } from './button-connect';
 
 export function TabBuy() {
-    const { openConnectModal } = useConnectModal();
-    const { balanceOfUSDT, balanceOfUSDB, allowance, address, isPending, formToken, toToken, handleSwap, handleApprove, handleBuySell, handelMintUSDT, loadingMintUSDT } = useBuy();
+    const { chain } = useAccount()
+
+    const { balanceOfUSDT, balanceOfUSDB, allowance, isPending, formToken, toToken, handleSwap, handleApprove, handleBuySell, handelMintUSDT, loadingMintUSDT } = useBuy();
     const [form] = Form.useForm();
 
     const onFinish = async ({ amount }: any) => {
@@ -89,28 +91,17 @@ export function TabBuy() {
                         </Form.Item>
                     </div>
                     <Form.Item>
-                        <div className='text-center'>
-                            {
-                                !address
-                                    ? <Button className='!w-full' onClick={openConnectModal} type="primary"> Connect Wallet</Button>
-                                    : <div className='flex flex-col gap-4'>
-                                        <Button
-                                            className='!w-full !capitalize'
-                                            loading={isPending}
-                                            type="primary" htmlType="submit"
-                                        >
-                                            {formToken.type}
-                                        </Button>
-                                        <Button
-                                            onClick={() => handelMintUSDT(100)}
-                                            type='dashed'
-                                            className='!w-full !capitalize'
-                                            loading={loadingMintUSDT}
-                                        >
-                                            Mint USDT
-                                        </Button>
-                                    </div>
-                            }
+                        <div className='flex flex-col gap-4'>
+                            <ButtonConnect loading={isPending} title={formToken.type} />
+                            <Button
+                                onClick={() => handelMintUSDT(100)}
+                                type='dashed'
+                                disabled={!chain}
+                                className='!w-full !capitalize'
+                                loading={loadingMintUSDT}
+                            >
+                                Mint USDT
+                            </Button>
                         </div>
                     </Form.Item>
                 </Form>

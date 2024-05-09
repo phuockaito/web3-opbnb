@@ -3,11 +3,9 @@ import { iconLogo } from '../assets'
 
 export const NavMenu = () => {
     return (
-        <div className='px-5 pt-5'>
-            <div className='flex items-center justify-between gap-5'>
-                <img src={iconLogo} alt={iconLogo} />
-                <ConnectButton />
-            </div>
+        <div className='flex items-center justify-between gap-5'>
+            <img src={iconLogo} alt={iconLogo} />
+            <ConnectButton />
         </div>
     )
 }

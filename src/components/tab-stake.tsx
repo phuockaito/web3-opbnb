@@ -1,16 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Form, InputNumber } from "antd";
+import { Form, InputNumber } from "antd";
 import { MdOutlineSwapVert } from "react-icons/md";
 import { useStake } from "../hooks";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { formatNumberPayment, NAME_TYPE_STAKE } from "../constants";
 import BigNumber from "bignumber.js";
+import { ButtonConnect } from "./button-connect";
 
 export function TabStake() {
     const [form] = Form.useForm();
-    const { openConnectModal } = useConnectModal();
 
-    const { address, formToken, toToken, balanceOfUSDB, balanceOfSUSDB, isPending, allowance, handleSwap, handleApprove, handleStakeUnstake } = useStake();
+    const { formToken, toToken, balanceOfUSDB, balanceOfSUSDB, isPending, allowance, handleSwap, handleApprove, handleStakeUnstake } = useStake();
 
     const balanceFormToken = formToken.name === "USDB" ? balanceOfUSDB : balanceOfSUSDB;
     const balanceToToken = toToken.name === "SUSDB" ? balanceOfSUSDB : balanceOfUSDB;
@@ -88,21 +87,7 @@ export function TabStake() {
                         </Form.Item>
                     </div>
                     <Form.Item>
-                        <div className='text-center'>
-                            {
-                                !address
-                                    ? <Button className='!w-full' onClick={openConnectModal} type="primary"> Connect Wallet</Button>
-                                    : <div className='flex flex-col gap-4'>
-                                        <Button
-                                            className='!w-full !capitalize'
-                                            loading={isPending}
-                                            type="primary" htmlType="submit"
-                                        >
-                                            {formToken.type === NAME_TYPE_STAKE ? "Stake" : "Unstake"}
-                                        </Button>
-                                    </div>
-                            }
-                        </div>
+                        <ButtonConnect loading={isPending} title={formToken.type === NAME_TYPE_STAKE ? "Stake" : "Unstake"} />
                     </Form.Item>
                 </Form>
             </div>
