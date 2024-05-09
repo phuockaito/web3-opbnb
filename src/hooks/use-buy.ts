@@ -7,33 +7,28 @@ import { maxUint256 } from 'viem';
 import { formatEther } from 'ethers';
 
 import { abiUSDB, abiUSDT } from '../abi';
-import { TOKEN_USDB, TOKEN_USDT } from '../constants';
+import { NAME_TYPE_BUY, NAME_TYPE_SELL, TOKEN_USDB, TOKEN_USDT } from '../constants';
 import { useNotification } from './use-notification';
 import { publicClient } from '../client';
-
-interface TOKENS {
-    name: string;
-    address: string;
-    type: string;
-}
+import { TOKENS } from '../types';
 
 interface ResultTokenType {
-    balanceUsdt: string;
-    allowanceUsdt: unknown;
-    balanceUsdb: string;
-    allowanceUsdb: unknown;
+    balance_USDT: string;
+    allowance_USDT: unknown;
+    balance_USDB: string;
+    allowance_USDB: unknown;
 }
 
-const tokenUsdt = {
+const token_USDT: TOKENS = {
     name: "USDT",
     address: TOKEN_USDT,
-    type: "buy"
+    type: NAME_TYPE_BUY
 }
 
-const tokenUsdb: TOKENS = {
+const token_USDB: TOKENS = {
     name: "USDB",
     address: TOKEN_USDB,
-    type: "sell"
+    type: NAME_TYPE_SELL
 }
 
 export const useBuy = () => {
@@ -44,7 +39,7 @@ export const useBuy = () => {
     const [loading, setLoading] = React.useState(false);
     const [loadingMintUSDT, setLoadingMintUSDT] = React.useState(false);
 
-    const [arrayToken, setArrayToken] = React.useState<TOKENS[]>([tokenUsdt, tokenUsdb]);
+    const [arrayToken, setArrayToken] = React.useState<TOKENS[]>([token_USDT, token_USDB]);
     const formToken = arrayToken[0];
     const toToken = arrayToken[1];
 
@@ -78,12 +73,12 @@ export const useBuy = () => {
         query: {
             enabled: !!account.address,
             select: (data): ResultTokenType => {
-                const [balanceUsdt, allowanceUsdt, balanceUsdb, allowanceUsdb] = data;
+                const [balance_USDT, allowance_USDT, balance_USDB, allowance_USDB] = data;
                 return {
-                    balanceUsdt: new BigNumber(formatEther(balanceUsdt.result as string)).decimalPlaces(5, 1).toString(),
-                    allowanceUsdt: allowanceUsdt.result,
-                    balanceUsdb: new BigNumber(formatEther(balanceUsdb.result as string)).decimalPlaces(5, 1).toString(),
-                    allowanceUsdb: allowanceUsdb.result
+                    balance_USDT: new BigNumber(formatEther(balance_USDT.result as string)).decimalPlaces(5, 1).toString(),
+                    allowance_USDT: allowance_USDT.result,
+                    balance_USDB: new BigNumber(formatEther(balance_USDB.result as string)).decimalPlaces(5, 1).toString(),
+                    allowance_USDB: allowance_USDB.result
                 }
             }
         }
@@ -91,7 +86,7 @@ export const useBuy = () => {
 
     const allowance = React.useMemo(() => {
         if (resultToken.status === "pending" || !resultToken.data) return 0;
-        return formToken.type === "buy" ? resultToken.data.allowanceUsdt : resultToken.data.balanceUsdb;
+        return formToken.type === NAME_TYPE_BUY ? resultToken.data.allowance_USDT : resultToken.data.balance_USDB;
     }, [formToken.type, resultToken]);
 
     const handleApprove = React.useCallback(async (token: string, spender: string) => {
@@ -131,7 +126,7 @@ export const useBuy = () => {
             if (tx) {
                 await publicClient.waitForTransactionReceipt({ hash: tx });
                 await queryClient.invalidateQueries()
-                handleNotificationSuccess(tx, `Mint ${amount} USDT success`)
+                handleNotificationSuccess(tx, `Mint ${amount} USDT successfully`)
             }
             setLoadingMintUSDT(false);
         } catch (error) {
@@ -143,7 +138,7 @@ export const useBuy = () => {
         }
     }, [account.address, handleNotificationError, handleNotificationSuccess, queryClient, contractAsync]);
 
-    const handleBuy = React.useCallback(async (amount: number, type: string) => {
+    const handleBuySell = React.useCallback(async (amount: number, type: string, uti: string) => {
         try {
             setLoading(true);
             const amountUSDT = new BigNumber(amount).multipliedBy(new BigNumber(10).pow(18)).toString();
@@ -156,7 +151,7 @@ export const useBuy = () => {
             if (tx) {
                 await publicClient.waitForTransactionReceipt({ hash: tx });
                 await queryClient.invalidateQueries()
-                handleNotificationSuccess(tx, `Buy ${amount} USDT success`)
+                handleNotificationSuccess(tx, `${type === NAME_TYPE_BUY ? "Buy" : "Sell"} ${amount} ${uti} successfully`)
             }
             setLoading(false);
         } catch (error) {
@@ -174,8 +169,8 @@ export const useBuy = () => {
     };
 
     return {
-        balanceOfUSDT: resultToken.data?.balanceUsdt || 0,
-        balanceOfUSDB: resultToken.data?.balanceUsdb || 0,
+        balanceOfUSDT: resultToken.data?.balance_USDT || 0,
+        balanceOfUSDB: resultToken.data?.balance_USDB || 0,
         address: account.address,
         isPending: loading,
         allowance,
@@ -183,7 +178,7 @@ export const useBuy = () => {
         toToken,
         loadingMintUSDT,
         handleApprove,
-        handleBuy,
+        handleBuySell,
         handleSwap,
         handelMintUSDT
     }

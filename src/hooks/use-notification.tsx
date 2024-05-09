@@ -16,6 +16,7 @@ export const useNotification = () => {
     const handleNotificationSuccess = React.useCallback((tx: string, message?: string) => {
         return notification["success"]({
             message: message || 'Notification Title',
+            placement: "topLeft",
             description:
                 <a href={handleTx(tx)} target='_blank'>
                     {`Tx: ${handleTruncateHex(tx)}`}
@@ -25,6 +26,7 @@ export const useNotification = () => {
 
     const handleNotificationError = React.useCallback((error: any) => {
         return notification["error"]({
+            placement: "topLeft",
             message: 'Error',
             description: <div dangerouslySetInnerHTML={{ __html: error || "" }} />,
         })
