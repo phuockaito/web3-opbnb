@@ -108,7 +108,7 @@ export function TabBuy() {
                             <Button
                                 onClick={() => handelMintUSDT(100)}
                                 type="dashed"
-                                disabled={!chain}
+                                disabled={!chain || isPending}
                                 className="!w-full !capitalize"
                                 loading={loadingMintUSDT}
                             >
