@@ -4,7 +4,7 @@ import { useAccount } from "wagmi";
 
 import { useBuy } from "@/hooks";
 
-import { formatNumberPayment, NAME_TYPE_BUY } from "../constants";
+import { formatNumberPayment, NAME_TYPE_BUY, NAME_TYPE_SELL } from "../constants";
 import { ButtonConnect } from "./button-connect";
 
 import { MdOutlineSwapVert } from "react-icons/md";
@@ -19,6 +19,8 @@ export function TabBuy() {
         isPending,
         formToken,
         toToken,
+        tokenUsdtRender,
+        tokenUsdbRender,
         handleSwap,
         handleApprove,
         handleBuySell,
@@ -30,23 +32,27 @@ export function TabBuy() {
     const onFinish = async ({ amount }: { amount: number }) => {
         const isAllowance = new BigNumber(allowance as string).isGreaterThan(new BigNumber(amount));
         if (!isAllowance) {
-            await handleApprove(formToken.address, toToken.address);
-            await handleBuySell(amount, formToken.type, formToken.name);
-            form.resetFields();
+            const error = await handleApprove(formToken.address, toToken.address);
+            if (!error) {
+                await handleBuySell(amount, formToken.type, formToken.name);
+                form.resetFields();
+            }
         } else {
             await handleBuySell(amount, formToken.type, formToken.name);
             form.resetFields();
         }
     };
 
-    const balanceFormToken = formToken.name === "USDT" ? balanceOfUSDT : balanceOfUSDB;
-    const balanceToToken = toToken.name === "USDB" ? balanceOfUSDB : balanceOfUSDT;
+    const balanceFormToken = formToken.name === tokenUsdtRender.name ? balanceOfUSDT : balanceOfUSDB;
+    const balanceToToken = toToken.name === tokenUsdbRender.name ? balanceOfUSDB : balanceOfUSDT;
 
     return (
         <div className="flex flex-col justify-center gap-5 mx-auto max-w-[400px]">
             <div className="px-6 py-5 border rounded-lg shadow-lg">
                 <h1 className="text-2xl font-semibold text-center">
-                    {formToken.type === NAME_TYPE_BUY ? "Buy USDT" : "Sell USDB"}{" "}
+                    {formToken.type === NAME_TYPE_BUY
+                        ? `${NAME_TYPE_BUY} ${tokenUsdtRender.name}`
+                        : `${NAME_TYPE_SELL} ${tokenUsdbRender.name}`}
                 </h1>
                 <Form
                     disabled={isPending}

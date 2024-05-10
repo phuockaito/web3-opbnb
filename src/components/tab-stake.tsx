@@ -1,7 +1,7 @@
 import { Form, InputNumber } from "antd";
 import BigNumber from "bignumber.js";
 
-import { formatNumberPayment, NAME_TYPE_STAKE } from "@/constants";
+import { formatNumberPayment, NAME_TYPE_STAKE, NAME_TYPE_UN_STAKE } from "@/constants";
 import { useStake } from "@/hooks";
 
 import { ButtonConnect } from "./button-connect";
@@ -18,20 +18,24 @@ export function TabStake() {
         balanceOfSUSDB,
         isPending,
         allowance,
+        tokenSusdbRender,
+        tokenUsdbRender,
         handleSwap,
         handleApprove,
         handleStakeUnStake,
     } = useStake();
 
-    const balanceFormToken = formToken.name === "USDB" ? balanceOfUSDB : balanceOfSUSDB;
-    const balanceToToken = toToken.name === "SUSDB" ? balanceOfSUSDB : balanceOfUSDB;
+    const balanceFormToken = formToken.name === tokenUsdbRender.name ? balanceOfUSDB : balanceOfSUSDB;
+    const balanceToToken = toToken.name === tokenSusdbRender.name ? balanceOfSUSDB : balanceOfUSDB;
 
     const onFinish = async ({ amount }: { amount: number }) => {
         const isAllowance = new BigNumber(allowance as string).isGreaterThan(new BigNumber(amount));
         if (!isAllowance) {
-            await handleApprove(formToken.address, toToken.address);
-            await handleStakeUnStake(amount, formToken.type, formToken.name);
-            form.resetFields();
+            const error = await handleApprove(formToken.address, toToken.address);
+            if (!error) {
+                await handleStakeUnStake(amount, formToken.type, formToken.name);
+                form.resetFields();
+            }
         } else {
             await handleStakeUnStake(amount, formToken.type, formToken.name);
             form.resetFields();
@@ -42,9 +46,18 @@ export function TabStake() {
         <div className="flex flex-col justify-center gap-5 mx-auto max-w-[400px]">
             <div className="px-6 py-5 border rounded-lg shadow-lg">
                 <h1 className="text-2xl font-semibold text-center">
-                    {formToken.type === NAME_TYPE_STAKE ? "Stake USDB" : "Unstake SUSDB"}
+                    {formToken.type === NAME_TYPE_STAKE
+                        ? `${NAME_TYPE_STAKE} ${tokenUsdbRender.name}`
+                        : `${NAME_TYPE_UN_STAKE} ${tokenSusdbRender.name}`}
                 </h1>
-                <Form onFinish={onFinish} className="!mt-5" size="large" form={form} layout="vertical">
+                <Form
+                    onFinish={onFinish}
+                    className="!mt-5"
+                    size="large"
+                    disabled={isPending}
+                    form={form}
+                    layout="vertical"
+                >
                     <Form.Item
                         className=""
                         label=""
@@ -86,10 +99,7 @@ export function TabStake() {
                         </Form.Item>
                     </div>
                     <Form.Item>
-                        <ButtonConnect
-                            loading={isPending}
-                            title={formToken.type === NAME_TYPE_STAKE ? "Stake" : "Unstake"}
-                        />
+                        <ButtonConnect loading={isPending} title={formToken.type} />
                     </Form.Item>
                 </Form>
             </div>

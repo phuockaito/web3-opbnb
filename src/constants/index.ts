@@ -1,12 +1,14 @@
 import BigNumber from "bignumber.js";
 
-export const TOKEN_USDT = "0x799C7692010919983F0a6916bAfE1981054F314E";
-export const TOKEN_USDB = "0x9449ff3E4d658018e183FD5aF304c14913bD8c25";
-export const TOKEN_SUSDB = "0x115066a4CCCCc42055147F94C38126A54f2F5fda";
-export const NAME_TYPE_STAKE = "stake";
-export const NAME_TYPE_BUY = "buy";
-export const NAME_TYPE_SELL = "sell";
-export const NAME_TYPE_UN_STAKE = "unstake";
+export const NAME_TYPE_STAKE = "Stake";
+export const NAME_TYPE_UN_STAKE = "Unstake";
+export const NAME_TYPE_BUY = "Buy";
+export const NAME_TYPE_SELL = "Sell";
+
+export enum ChainId {
+    OP_BNB = 5611,
+    BSC_TESTNET = 97,
+}
 
 export const formatNumberPayment = (price: number | string, minimum = 0, maximum = 0) => {
     if (!price) return 0;

@@ -4,12 +4,13 @@ import { useQueryClient } from "@tanstack/react-query";
 import BigNumber from "bignumber.js";
 import { formatEther } from "ethers";
 import { maxUint256 } from "viem";
-import { useAccount, usePublicClient, useReadContracts, useWriteContract } from "wagmi";
+import { useAccount, useChainId, usePublicClient, useReadContracts, useWriteContract } from "wagmi";
 
 import { abiSUSDB, abiUSDB } from "@/abi";
 import { config } from "@/config";
-import { NAME_TYPE_STAKE, NAME_TYPE_UN_STAKE, TOKEN_SUSDB, TOKEN_USDB } from "@/constants";
-import { TOKENS } from "@/types";
+import { NAME_TYPE_STAKE, NAME_TYPE_UN_STAKE } from "@/constants";
+import { TokenType } from "@/types";
+import { renderTokenSusdb, renderTokenUsdb } from "@/utils";
 
 import { useNotification } from "./use-notification";
 
@@ -20,24 +21,32 @@ interface ResultTokenType {
     allowance_SUSDB: unknown;
 }
 
-const token_USDB: TOKENS = {
-    name: "USDB",
-    address: TOKEN_USDB,
-    type: NAME_TYPE_STAKE,
-};
-
-const token_SUSDB: TOKENS = {
-    name: "SUSDB",
-    address: TOKEN_SUSDB,
-    type: NAME_TYPE_UN_STAKE,
-};
-
 export const useStake = () => {
     const publicClient = usePublicClient({ config });
     const queryClient = useQueryClient();
     const account = useAccount();
     const contractAsync = useWriteContract();
-    const [arrayToken, setArrayToken] = React.useState<TOKENS[]>([token_USDB, token_SUSDB]);
+    const chainId = useChainId();
+
+    const tokenUsdbRender = renderTokenUsdb(chainId);
+    const tokenSusdbRender = renderTokenSusdb(chainId);
+
+    const TOKEN_SUSDB = tokenSusdbRender.address;
+    const TOKEN_USDB = tokenUsdbRender.address;
+
+    const token_USDB: TokenType = {
+        name: tokenUsdbRender.name,
+        address: TOKEN_USDB,
+        type: NAME_TYPE_STAKE,
+    };
+
+    const token_SUSDB: TokenType = {
+        name: tokenSusdbRender.name,
+        address: TOKEN_SUSDB,
+        type: NAME_TYPE_UN_STAKE,
+    };
+
+    const [arrayToken, setArrayToken] = React.useState<TokenType[]>([token_USDB, token_SUSDB]);
     const [loading, setLoading] = React.useState(false);
     const { handleNotificationError, handleNotificationSuccess } = useNotification();
 
@@ -75,15 +84,21 @@ export const useStake = () => {
             enabled: !!account.address,
             select: (data): ResultTokenType => {
                 const [balance_USDB, allowance_USDB, balance_SUSDB, allowance_SUSDB] = data;
+                const balanceUSDB =
+                    balance_USDB.status === "success"
+                        ? new BigNumber(formatEther(balance_USDB.result as string)).decimalPlaces(5, 1).toString()
+                        : "0";
+                const allowanceUSDB = allowance_USDB.status === "success" ? allowance_USDB.result : "0";
+                const balanceSUSDB =
+                    balance_SUSDB.status === "success"
+                        ? new BigNumber(formatEther(balance_SUSDB.result as string)).decimalPlaces(5, 1).toString()
+                        : "0";
+                const allowanceSUSDB = allowance_SUSDB.status === "success" ? allowance_SUSDB.result : "0";
                 return {
-                    balance_USDB: new BigNumber(formatEther(balance_USDB.result as string))
-                        .decimalPlaces(5, 1)
-                        .toString(),
-                    allowance_USDB: allowance_USDB.result,
-                    balance_SUSDB: new BigNumber(formatEther(balance_SUSDB.result as string))
-                        .decimalPlaces(5, 1)
-                        .toString(),
-                    allowance_SUSDB: allowance_SUSDB.result,
+                    balance_USDB: balanceUSDB,
+                    allowance_USDB: allowanceUSDB,
+                    balance_SUSDB: balanceSUSDB,
+                    allowance_SUSDB: allowanceSUSDB,
                 };
             },
         },
@@ -105,12 +120,14 @@ export const useStake = () => {
                     handleNotificationSuccess(tx, "Approve successfully");
                 }
                 setLoading(false);
-            } catch (error: unknown) {
+                return false;
+            } catch (error: any) {
                 setLoading(false);
                 const stringify = JSON.stringify(error);
                 const parseError = JSON.parse(stringify);
                 console.log(parseError);
                 handleNotificationError(parseError?.shortMessage);
+                return true;
             }
         },
         [contractAsync, publicClient, queryClient, handleNotificationSuccess, handleNotificationError]
@@ -124,19 +141,16 @@ export const useStake = () => {
                 const tx = await contractAsync.writeContractAsync({
                     address: TOKEN_SUSDB,
                     abi: abiSUSDB,
-                    functionName: type,
+                    functionName: type.toLocaleLowerCase(),
                     args: [quantity],
                 });
                 if (tx) {
                     await publicClient.waitForTransactionReceipt({ hash: tx });
                     await queryClient.invalidateQueries();
-                    handleNotificationSuccess(
-                        tx,
-                        `${type === NAME_TYPE_STAKE ? "Stake" : "Unstake"} ${amount} ${uti} successfully`
-                    );
+                    handleNotificationSuccess(tx, `${type} ${amount} ${uti} successfully`);
                 }
                 setLoading(false);
-            } catch (error) {
+            } catch (error: any) {
                 const stringify = JSON.stringify(error);
                 const parseError = JSON.parse(stringify);
                 console.log(parseError);
@@ -144,7 +158,7 @@ export const useStake = () => {
                 setLoading(false);
             }
         },
-        [contractAsync, publicClient, queryClient, handleNotificationSuccess, handleNotificationError]
+        [contractAsync, TOKEN_SUSDB, publicClient, queryClient, handleNotificationSuccess, handleNotificationError]
     );
 
     const allowance = React.useMemo(() => {
@@ -166,6 +180,8 @@ export const useStake = () => {
         toToken,
         resultToken,
         allowance,
+        tokenSusdbRender,
+        tokenUsdbRender,
         handleSwap,
         handleApprove,
         handleStakeUnStake,

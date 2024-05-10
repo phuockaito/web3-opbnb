@@ -4,12 +4,13 @@ import { useQueryClient } from "@tanstack/react-query";
 import BigNumber from "bignumber.js";
 import { formatEther } from "ethers";
 import { maxUint256 } from "viem";
-import { useAccount, usePublicClient, useReadContracts, useWriteContract } from "wagmi";
+import { useAccount, useChainId, usePublicClient, useReadContracts, useWriteContract } from "wagmi";
 
 import { abiUSDB, abiUSDT } from "@/abi";
 import { config } from "@/config";
-import { NAME_TYPE_BUY, NAME_TYPE_SELL, TOKEN_USDB, TOKEN_USDT } from "@/constants";
-import { TOKENS } from "@/types";
+import { NAME_TYPE_BUY, NAME_TYPE_SELL } from "@/constants";
+import { TokenType } from "@/types";
+import { renderTokenUsdb, renderTokenUsdt } from "@/utils";
 
 import { useNotification } from "./use-notification";
 
@@ -20,28 +21,35 @@ interface ResultTokenType {
     allowance_USDB: unknown;
 }
 
-const token_USDT: TOKENS = {
-    name: "USDT",
-    address: TOKEN_USDT,
-    type: NAME_TYPE_BUY,
-};
-
-const token_USDB: TOKENS = {
-    name: "USDB",
-    address: TOKEN_USDB,
-    type: NAME_TYPE_SELL,
-};
-
 export const useBuy = () => {
     const publicClient = usePublicClient({ config });
     const contractAsync = useWriteContract();
     const account = useAccount();
     const queryClient = useQueryClient();
     const { handleNotificationError, handleNotificationSuccess } = useNotification();
+    const chainId = useChainId();
+
+    const tokenUsdtRender = renderTokenUsdt(chainId);
+    const tokenUsdbRender = renderTokenUsdb(chainId);
+
+    const TOKEN_USDT = tokenUsdtRender.address;
+    const TOKEN_USDB = tokenUsdbRender.address;
+
+    const token_USDT: TokenType = {
+        name: tokenUsdtRender.name,
+        address: TOKEN_USDT,
+        type: NAME_TYPE_BUY,
+    };
+
+    const token_USDB: TokenType = {
+        name: tokenUsdbRender.name,
+        address: TOKEN_USDB,
+        type: NAME_TYPE_SELL,
+    };
+
     const [loading, setLoading] = React.useState(false);
     const [loadingMintUSDT, setLoadingMintUSDT] = React.useState(false);
-
-    const [arrayToken, setArrayToken] = React.useState<TOKENS[]>([token_USDT, token_USDB]);
+    const [arrayToken, setArrayToken] = React.useState<TokenType[]>([token_USDT, token_USDB]);
     const formToken = arrayToken[0];
     const toToken = arrayToken[1];
 
@@ -76,15 +84,21 @@ export const useBuy = () => {
             enabled: !!account.address,
             select: (data): ResultTokenType => {
                 const [balance_USDT, allowance_USDT, balance_USDB, allowance_USDB] = data;
+                const balanceUSDT =
+                    balance_USDT.status === "success"
+                        ? new BigNumber(formatEther(balance_USDT.result as string)).decimalPlaces(5, 1).toString()
+                        : "0";
+                const balanceUSDB =
+                    balance_USDB.status === "success"
+                        ? new BigNumber(formatEther(balance_USDB.result as string)).decimalPlaces(5, 1).toString()
+                        : "0";
+                const allowanceUSDT = allowance_USDT.status === "success" ? allowance_USDT.result : "0";
+                const allowanceUSDB = allowance_USDB.status === "success" ? allowance_USDB.result : "0";
                 return {
-                    balance_USDT: new BigNumber(formatEther(balance_USDT.result as string))
-                        .decimalPlaces(5, 1)
-                        .toString(),
-                    allowance_USDT: allowance_USDT.result,
-                    balance_USDB: new BigNumber(formatEther(balance_USDB.result as string))
-                        .decimalPlaces(5, 1)
-                        .toString(),
-                    allowance_USDB: allowance_USDB.result,
+                    balance_USDT: balanceUSDT,
+                    allowance_USDT: allowanceUSDT,
+                    balance_USDB: balanceUSDB,
+                    allowance_USDB: allowanceUSDB,
                 };
             },
         },
@@ -111,15 +125,53 @@ export const useBuy = () => {
                     handleNotificationSuccess(tx, "Approve success");
                 }
                 setLoading(false);
-            } catch (error: unknown) {
+                return false;
+            } catch (error: any) {
                 setLoading(false);
+                const stringify = JSON.stringify(error);
+                const parseError = JSON.parse(stringify);
+                handleNotificationError(parseError?.shortMessage);
+                console.log(parseError);
+                return true;
+            }
+        },
+        [contractAsync, publicClient, queryClient, handleNotificationSuccess, handleNotificationError]
+    );
+
+    const handleBuySell = React.useCallback(
+        async (amount: number, type: string, uti: string) => {
+            try {
+                setLoading(true);
+                const amountUSDT = new BigNumber(amount).multipliedBy(new BigNumber(10).pow(18)).toString();
+                const tx = await contractAsync.writeContractAsync({
+                    address: TOKEN_USDB,
+                    abi: abiUSDB,
+                    functionName: type.toLocaleLowerCase(),
+                    args: [TOKEN_USDT, amountUSDT],
+                });
+                if (tx) {
+                    await publicClient.waitForTransactionReceipt({ hash: tx });
+                    await queryClient.invalidateQueries();
+                    handleNotificationSuccess(tx, `${type} ${amount} ${uti} successfully`);
+                }
+                setLoading(false);
+            } catch (error: any) {
                 const stringify = JSON.stringify(error);
                 const parseError = JSON.parse(stringify);
                 console.log(parseError);
                 handleNotificationError(parseError?.shortMessage);
+                setLoading(false);
             }
         },
-        [contractAsync, publicClient, queryClient, handleNotificationSuccess, handleNotificationError]
+        [
+            contractAsync,
+            TOKEN_USDB,
+            TOKEN_USDT,
+            publicClient,
+            queryClient,
+            handleNotificationSuccess,
+            handleNotificationError,
+        ]
     );
 
     const handelMintUSDT = React.useCallback(
@@ -139,46 +191,23 @@ export const useBuy = () => {
                     handleNotificationSuccess(tx, `Mint ${amount} USDT successfully`);
                 }
                 setLoadingMintUSDT(false);
-            } catch (error) {
+            } catch (error: any) {
                 const stringify = JSON.stringify(error);
                 const parseError = JSON.parse(stringify);
-                console.log(parseError);
                 handleNotificationError(parseError?.shortMessage);
+                console.log(parseError);
                 setLoadingMintUSDT(false);
             }
         },
-        [contractAsync, account.address, publicClient, queryClient, handleNotificationSuccess, handleNotificationError]
-    );
-
-    const handleBuySell = React.useCallback(
-        async (amount: number, type: string, uti: string) => {
-            try {
-                setLoading(true);
-                const amountUSDT = new BigNumber(amount).multipliedBy(new BigNumber(10).pow(18)).toString();
-                const tx = await contractAsync.writeContractAsync({
-                    address: TOKEN_USDB,
-                    abi: abiUSDB,
-                    functionName: type,
-                    args: [TOKEN_USDT, amountUSDT],
-                });
-                if (tx) {
-                    await publicClient.waitForTransactionReceipt({ hash: tx });
-                    await queryClient.invalidateQueries();
-                    handleNotificationSuccess(
-                        tx,
-                        `${type === NAME_TYPE_BUY ? "Buy" : "Sell"} ${amount} ${uti} successfully`
-                    );
-                }
-                setLoading(false);
-            } catch (error) {
-                const stringify = JSON.stringify(error);
-                const parseError = JSON.parse(stringify);
-                console.log(parseError);
-                handleNotificationError(parseError?.shortMessage);
-                setLoading(false);
-            }
-        },
-        [contractAsync, publicClient, queryClient, handleNotificationSuccess, handleNotificationError]
+        [
+            contractAsync,
+            TOKEN_USDT,
+            account.address,
+            publicClient,
+            queryClient,
+            handleNotificationSuccess,
+            handleNotificationError,
+        ]
     );
 
     const handleSwap = () => {
@@ -195,6 +224,8 @@ export const useBuy = () => {
         formToken,
         toToken,
         loadingMintUSDT,
+        tokenUsdtRender,
+        tokenUsdbRender,
         handleApprove,
         handleBuySell,
         handleSwap,
