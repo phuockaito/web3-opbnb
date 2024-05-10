@@ -1,10 +1,9 @@
-import { NavMenu, TabBuy, TabStake } from "./components"
-import { Tabs } from 'antd';
-import { SketchOutlined, DollarOutlined } from '@ant-design/icons';
+import { DollarOutlined, SketchOutlined } from "@ant-design/icons";
+import { Tabs } from "antd";
 
+import { NavMenu, TabBuy, TabStake } from "@/components";
 
 function App() {
-
     return (
         <>
             <NavMenu />
@@ -12,24 +11,23 @@ function App() {
                 size="large"
                 centered
                 defaultActiveKey="1"
-                items={
-                    [
-                        {
-                            key: '1',
-                            label: 'Buy',
-                            children: <TabBuy />,
-                            icon: <DollarOutlined />
-                        },
-                        {
-                            key: '2',
-                            label: 'Stake',
-                            children: <TabStake />,
-                            icon: <SketchOutlined />
-                        },
-                    ]
-                } />
+                items={[
+                    {
+                        key: "1",
+                        label: "Buy",
+                        children: <TabBuy />,
+                        icon: <DollarOutlined />,
+                    },
+                    {
+                        key: "2",
+                        label: "Stake",
+                        children: <TabStake />,
+                        icon: <SketchOutlined />,
+                    },
+                ]}
+            />
         </>
-    )
+    );
 }
 
-export default App
+export default App;

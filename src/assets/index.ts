@@ -1,5 +1,3 @@
-import iconLogo from './icon-logo.svg';
+import iconLogo from "./icon-logo.svg";
 
-export {
-    iconLogo
-}
+export { iconLogo };
