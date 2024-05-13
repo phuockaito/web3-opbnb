@@ -46,8 +46,8 @@ export const config = createConfig({
     chains: [
         {
             ...opBNBTestnet,
-            iconUrl: "https://img.cryptorank.io/coins/op_bnb1687420235160.png"
-        }
+            iconUrl: "https://img.cryptorank.io/coins/op_bnb1687420235160.png",
+        },
     ],
     connectors,
     client({ chain }) {
