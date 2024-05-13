@@ -25,7 +25,11 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
         <WagmiProvider config={config}>
             <QueryClientProvider client={queryClient}>
-                <RainbowKitProvider>
+                <RainbowKitProvider
+                    coolMode
+                    initialChain={{
+                        ...config.chains[0]
+                    }}>
                     <div className="max-w-6xl p-5 m-auto">
                         <App />
                     </div>
