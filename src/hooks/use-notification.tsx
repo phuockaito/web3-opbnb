@@ -1,20 +1,18 @@
 import React from "react";
 
 import { notification } from "antd";
-import { useWalletClient } from "wagmi";
+import { useAccount } from "wagmi";
 
 import { handleTruncateHex } from "@/constants";
 
 export const useNotification = () => {
-    const walletClient = useWalletClient();
+    const { chain } = useAccount();
 
     const handleTx = React.useCallback(
         (tx: string) => {
-            if (!walletClient.data) return;
-            return `${walletClient?.data?.chain?.blockExplorers?.default?.url}/tx/${tx}`;
-        },
-        [walletClient]
-    );
+            if (!chain) return;
+            return `${chain.blockExplorers?.default.url}/tx/${tx}`;
+        }, [chain]);
 
     const handleNotificationSuccess = React.useCallback(
         (tx: string, message?: string) => {

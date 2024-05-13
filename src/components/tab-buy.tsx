@@ -87,7 +87,7 @@ export function TabBuy() {
                                 </div>
                                 <p>{`Balance: ${formatNumberPayment(balanceFormToken)}`}</p>
                             </div>
-                            <InputNumber max={balanceFormToken} placeholder="0" controls={false} className="!w-full" />
+                            <InputNumber max={101} placeholder="0" controls={false} className="!w-full" />
                         </div>
                     </Form.Item>
                     <div className="flex justify-center">
