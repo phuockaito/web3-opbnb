@@ -12,7 +12,9 @@ export const useNotification = () => {
         (tx: string) => {
             if (!chain) return;
             return `${chain.blockExplorers?.default.url}/tx/${tx}`;
-        }, [chain]);
+        },
+        [chain]
+    );
 
     const handleNotificationSuccess = React.useCallback(
         (tx: string, message?: string) => {

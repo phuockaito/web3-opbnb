@@ -17,6 +17,8 @@ import { createConfig, http } from "@wagmi/core";
 import { createClient } from "viem";
 import { opBNBTestnet } from "viem/chains";
 
+import { iconOpBNBTestnet } from "./assets";
+
 const connectors = connectorsForWallets(
     [
         {
@@ -46,7 +48,7 @@ export const config = createConfig({
     chains: [
         {
             ...opBNBTestnet,
-            iconUrl: "https://img.cryptorank.io/coins/op_bnb1687420235160.png",
+            iconUrl: iconOpBNBTestnet,
         },
     ],
     connectors,
