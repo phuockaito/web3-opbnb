@@ -3,7 +3,7 @@ import * as React from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import BigNumber from "bignumber.js";
 import { formatEther } from "ethers";
-import { maxUint256 } from "viem";
+import { Address, maxUint256 } from "viem";
 import { useAccount, useChainId, usePublicClient, useReadContracts, useWriteContract } from "wagmi";
 
 import { abiUSDB, abiUSDT } from "@/abi";
@@ -110,11 +110,11 @@ export const useBuy = () => {
     }, [formToken.type, resultToken]);
 
     const handleApprove = React.useCallback(
-        async (token: string, spender: string) => {
+        async (token: Address, spender: Address) => {
             try {
                 setLoading(true);
                 const tx = await contractAsync.writeContractAsync({
-                    address: token as `0x${string}`,
+                    address: token,
                     abi: abiUSDT,
                     functionName: "approve",
                     args: [spender, maxUint256],
