@@ -81,11 +81,11 @@ export function TabStake() {
                             }),
                         ]}
                     >
-                        <div className="grid gap-4">
+                        <div className="grid gap-2">
                             <div className="flex items-center justify-between gap-10">
                                 <div className="flex items-center gap-0.5">
                                     <p className="text-red-600">*</p>
-                                    <h1>{formToken.name}</h1>
+                                    <h1 className="font-semibold">{formToken.name}</h1>
                                 </div>
                                 <p>{`Balance: ${formatNumberPayment(balanceFormToken)}`}</p>
                             </div>
@@ -108,7 +108,7 @@ export function TabStake() {
                     </div>
                     <div>
                         <div className="flex items-center justify-between gap-10 mb-2">
-                            <p>{toToken.name}</p>
+                            <h1 className="font-semibold">{toToken.name}</h1>
                             <p>{`Balance: ${formatNumberPayment(balanceToToken)}`}</p>
                         </div>
                         <Form.Item label="" name="USDB">
@@ -119,7 +119,7 @@ export function TabStake() {
                         <ButtonConnect loading={isPending} title={formToken.type} />
                     </Form.Item>
                 </Form>
-                <p className="text-base">
+                <p className="text-base text-center">
                     Note: <span className="text-sm">Only active on opBNB Testnet</span>
                 </p>
             </div>
