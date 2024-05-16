@@ -2,7 +2,7 @@ import React from "react";
 
 import { DollarOutlined, SketchOutlined } from "@ant-design/icons";
 import { Tabs, Typography } from "antd";
-
+import { FaGithub } from "react-icons/fa";
 import { NavMenu, TabBuy, TabStake } from "@/components";
 
 function App() {
@@ -30,7 +30,12 @@ function App() {
                     },
                 ]}
             />
-            <div className="mt-5">
+            <div className="flex justify-center py-4">
+                <a href="https://github.com/phuockaito/web3-opbnb" target="_blank">
+                    <FaGithub size={25} />
+                </a>
+            </div>
+            <div>
                 <Typography.Paragraph
                     title="title"
                     ellipsis={{
