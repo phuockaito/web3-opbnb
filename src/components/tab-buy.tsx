@@ -76,7 +76,7 @@ export function TabBuy() {
                             },
                             ({ setFieldValue }) => ({
                                 validator(_, value) {
-                                    setFieldValue("USDB", Number(value) > 100 ? 100 : value);
+                                    setFieldValue("USDB", Number(value) > 99 ? 99 : value);
                                     if (!balanceFormToken && value)
                                         return Promise.reject(new Error("Balance not enough!"));
                                     return Promise.resolve();
@@ -99,7 +99,7 @@ export function TabBuy() {
                                     }
                                 }}
                                 min={1}
-                                max={100}
+                                max={99}
                                 placeholder="0"
                                 controls={false}
                                 className="!w-full"
