@@ -8,7 +8,7 @@ import type { Address } from "viem";
 import { useAccount, useChainId, usePublicClient, useReadContracts, useWriteContract } from "wagmi";
 
 import { abiSUSDB, abiUSDB } from "@/abi";
-import { config } from "@/config";
+import { walletConfig } from "@/config";
 import { bigintReplacer, NAME_TYPE_STAKE, NAME_TYPE_UN_STAKE } from "@/constants";
 import type { TokenType } from "@/types";
 import { renderTokenSusdb, renderTokenUsdb } from "@/utils";
@@ -23,10 +23,10 @@ interface ResultTokenType {
 }
 
 export const useStake = () => {
-    const publicClient = usePublicClient({ config });
+    const publicClient = usePublicClient({ config: walletConfig });
+    const contractAsync = useWriteContract({ config: walletConfig });
     const queryClient = useQueryClient();
     const account = useAccount();
-    const contractAsync = useWriteContract();
     const chainId = useChainId();
 
     const tokenUsdbRender = renderTokenUsdb(chainId);

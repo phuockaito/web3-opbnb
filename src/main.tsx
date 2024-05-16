@@ -10,7 +10,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { opBNBTestnet } from "viem/chains";
 import { WagmiProvider } from "wagmi";
 
-import { config } from "@/config";
+import { walletConfig } from "@/config";
 
 import App from "./App";
 
@@ -18,13 +18,14 @@ const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
             staleTime: 0,
+            retry: 0,
         },
     },
 });
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
-        <WagmiProvider config={config}>
+        <WagmiProvider config={walletConfig}>
             <QueryClientProvider client={queryClient}>
                 <RainbowKitProvider coolMode initialChain={opBNBTestnet}>
                     <div className="max-w-6xl p-5 m-auto">

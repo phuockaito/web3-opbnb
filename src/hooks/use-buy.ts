@@ -8,7 +8,7 @@ import type { Address } from "viem";
 import { useAccount, useChainId, usePublicClient, useReadContracts, useWriteContract } from "wagmi";
 
 import { abiUSDB, abiUSDT } from "@/abi";
-import { config } from "@/config";
+import { walletConfig } from "@/config";
 import { bigintReplacer, NAME_TYPE_BUY, NAME_TYPE_SELL } from "@/constants";
 import type { TokenType } from "@/types";
 import { renderTokenUsdb, renderTokenUsdt } from "@/utils";
@@ -23,8 +23,8 @@ interface ResultTokenType {
 }
 
 export const useBuy = () => {
-    const publicClient = usePublicClient({ config });
-    const contractAsync = useWriteContract();
+    const publicClient = usePublicClient({ config: walletConfig });
+    const contractAsync = useWriteContract({ config: walletConfig });
     const account = useAccount();
     const queryClient = useQueryClient();
     const { handleNotificationError, handleNotificationSuccess } = useNotification();
@@ -82,6 +82,7 @@ export const useBuy = () => {
             },
         ],
         query: {
+            retry: 0,
             enabled: !!account.address,
             select: (data): ResultTokenType => {
                 const [balance_USDT, allowance_USDT, balance_USDB, allowance_USDB] = data;

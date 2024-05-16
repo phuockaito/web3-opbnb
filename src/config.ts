@@ -44,7 +44,7 @@ const connectors = connectorsForWallets(
     }
 );
 
-export const config = createConfig({
+export const walletConfig = createConfig({
     chains: [
         {
             ...opBNBTestnet,
