@@ -3,13 +3,14 @@ import * as React from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import BigNumber from "bignumber.js";
 import { formatEther } from "ethers";
-import { Address, maxUint256 } from "viem";
+import { maxUint256 } from "viem";
+import type { Address } from "viem";
 import { useAccount, useChainId, usePublicClient, useReadContracts, useWriteContract } from "wagmi";
 
 import { abiSUSDB, abiUSDB } from "@/abi";
 import { config } from "@/config";
 import { NAME_TYPE_STAKE, NAME_TYPE_UN_STAKE } from "@/constants";
-import { TokenType } from "@/types";
+import type { TokenType } from "@/types";
 import { renderTokenSusdb, renderTokenUsdb } from "@/utils";
 
 import { useNotification } from "./use-notification";

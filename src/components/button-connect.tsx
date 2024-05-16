@@ -15,7 +15,6 @@ export const ButtonConnect = ({ title, loading }: ButtonConnectType) => {
     if (!address)
         return (
             <Button className="!w-full" onClick={openConnectModal} type="primary">
-                {" "}
                 Connect Wallet
             </Button>
         );

@@ -2,9 +2,9 @@ import { Button, Form, InputNumber } from "antd";
 import BigNumber from "bignumber.js";
 import { useAccount } from "wagmi";
 
+import { formatNumberPayment, NAME_TYPE_BUY, NAME_TYPE_SELL } from "@/constants";
 import { useBuy } from "@/hooks";
 
-import { formatNumberPayment, NAME_TYPE_BUY, NAME_TYPE_SELL } from "../constants";
 import { ButtonConnect } from "./button-connect";
 
 import { MdOutlineSwapVert } from "react-icons/md";
