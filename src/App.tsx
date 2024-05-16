@@ -2,8 +2,10 @@ import React from "react";
 
 import { DollarOutlined, SketchOutlined } from "@ant-design/icons";
 import { Tabs, Typography } from "antd";
-import { FaGithub } from "react-icons/fa";
+
 import { NavMenu, TabBuy, TabStake } from "@/components";
+
+import { FaGithub } from "react-icons/fa";
 
 function App() {
     const [expanded, setExpanded] = React.useState(false);

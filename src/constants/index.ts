@@ -26,6 +26,9 @@ export function handleTruncateHex(hexStr: string, keepFirst = 12, keepLast = 12)
 
     const firstPart = hexStr.substring(0, keepFirst);
     const lastPart = hexStr.substring(hexStr.length - keepLast);
-
     return `${firstPart}....${lastPart}`;
+}
+
+export function bigintReplacer(key: any, value: any) {
+    return typeof value === "bigint" ? value.toString() : value;
 }

@@ -9,7 +9,7 @@ import { useAccount, useChainId, usePublicClient, useReadContracts, useWriteCont
 
 import { abiSUSDB, abiUSDB } from "@/abi";
 import { config } from "@/config";
-import { NAME_TYPE_STAKE, NAME_TYPE_UN_STAKE } from "@/constants";
+import { bigintReplacer, NAME_TYPE_STAKE, NAME_TYPE_UN_STAKE } from "@/constants";
 import type { TokenType } from "@/types";
 import { renderTokenSusdb, renderTokenUsdb } from "@/utils";
 
@@ -124,7 +124,7 @@ export const useStake = () => {
                 return false;
             } catch (error: any) {
                 setLoading(false);
-                const stringify = JSON.stringify(error);
+                const stringify = JSON.stringify(error, bigintReplacer);
                 const parseError = JSON.parse(stringify);
                 console.log(parseError);
                 handleNotificationError(parseError?.shortMessage);
@@ -152,7 +152,7 @@ export const useStake = () => {
                 }
                 setLoading(false);
             } catch (error: any) {
-                const stringify = JSON.stringify(error);
+                const stringify = JSON.stringify(error, bigintReplacer);
                 const parseError = JSON.parse(stringify);
                 console.log(parseError);
                 handleNotificationError(parseError?.shortMessage);

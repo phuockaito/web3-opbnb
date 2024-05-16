@@ -9,7 +9,7 @@ import { useAccount, useChainId, usePublicClient, useReadContracts, useWriteCont
 
 import { abiUSDB, abiUSDT } from "@/abi";
 import { config } from "@/config";
-import { NAME_TYPE_BUY, NAME_TYPE_SELL } from "@/constants";
+import { bigintReplacer, NAME_TYPE_BUY, NAME_TYPE_SELL } from "@/constants";
 import type { TokenType } from "@/types";
 import { renderTokenUsdb, renderTokenUsdt } from "@/utils";
 
@@ -129,7 +129,7 @@ export const useBuy = () => {
                 return false;
             } catch (error: any) {
                 setLoading(false);
-                const stringify = JSON.stringify(error);
+                const stringify = JSON.stringify(error, bigintReplacer);
                 const parseError = JSON.parse(stringify);
                 handleNotificationError(parseError?.shortMessage);
                 console.log(parseError);
@@ -157,7 +157,7 @@ export const useBuy = () => {
                 }
                 setLoading(false);
             } catch (error: any) {
-                const stringify = JSON.stringify(error);
+                const stringify = JSON.stringify(error, bigintReplacer);
                 const parseError = JSON.parse(stringify);
                 console.log(parseError);
                 handleNotificationError(parseError?.shortMessage);
@@ -193,7 +193,7 @@ export const useBuy = () => {
                 }
                 setLoadingMintUSDT(false);
             } catch (error: any) {
-                const stringify = JSON.stringify(error);
+                const stringify = JSON.stringify(error, bigintReplacer);
                 const parseError = JSON.parse(stringify);
                 handleNotificationError(parseError?.shortMessage);
                 console.log(parseError);

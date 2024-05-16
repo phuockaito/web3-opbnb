@@ -15,7 +15,7 @@ import {
 } from "@rainbow-me/rainbowkit/wallets";
 import { createConfig, http } from "@wagmi/core";
 import { createClient } from "viem";
-import { opBNBTestnet } from "viem/chains";
+import { arbitrumGoerli, opBNBTestnet, polygonMumbai } from "viem/chains";
 
 import { iconOpBNBTestnet } from "./assets";
 
@@ -49,6 +49,17 @@ export const config = createConfig({
         {
             ...opBNBTestnet,
             iconUrl: iconOpBNBTestnet,
+        },
+        {
+            ...arbitrumGoerli,
+            rpcUrls: {
+                default: {
+                    http: ["https://arbitrum-goerli.public.blastapi.io"],
+                },
+            },
+        },
+        {
+            ...polygonMumbai,
         },
     ],
     connectors,
