@@ -77,8 +77,8 @@ export function TabBuy() {
                             ({ setFieldValue }) => ({
                                 validator(_, value) {
                                     setFieldValue("USDB", Number(value) > 99 ? 99 : value);
-                                    // if (!balanceFormToken && value)
-                                    //     return Promise.reject(new Error("Balance not enough!"));
+                                    if (!balanceFormToken && value)
+                                        return Promise.reject(new Error("Balance not enough!"));
                                     return Promise.resolve();
                                 },
                             }),
@@ -133,6 +133,9 @@ export function TabBuy() {
                         </div>
                     </Form.Item>
                 </Form>
+                <p className="text-base">
+                    Note: <span className="text-sm">Only active on opBNB Testnet</span>
+                </p>
             </div>
         </div>
     );

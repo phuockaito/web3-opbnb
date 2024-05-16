@@ -119,6 +119,9 @@ export function TabStake() {
                         <ButtonConnect loading={isPending} title={formToken.type} />
                     </Form.Item>
                 </Form>
+                <p className="text-base">
+                    Note: <span className="text-sm">Only active on opBNB Testnet</span>
+                </p>
             </div>
         </div>
     );

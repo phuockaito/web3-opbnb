@@ -57,7 +57,7 @@ function App() {
                         Ethena's synthetic dollar, USDe, provides the crypto-native, scalable solution for money
                         achieved by delta-hedging Ethereum and Bitcoin collateral. USDe is fully-backed (subject to the
                         discussion in the Risks section regarding events potentially resulting in loss of backing) and
-                        free to compose throughout CeFi & DeFi.{" "}
+                        free to compose throughout CeFi & DeFi.
                     </Typography.Text>
                     <Typography.Text className="inline-block pt-2 text-base text-justify">
                         USDe peg stability is supported through the use of delta hedging derivatives positions against
