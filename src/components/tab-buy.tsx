@@ -34,18 +34,21 @@ export function TabBuy() {
         if (!isAllowance) {
             const error = await handleApprove(formToken.address, toToken.address);
             if (!error) {
-                await handleBuySell(amount, formToken.type, formToken.name);
-                form.resetFields();
+                const errorBuySell = await handleBuySell(amount, formToken.type, formToken.name);
+                if (!errorBuySell) {
+                    form.resetFields();
+                }
             }
         } else {
-            await handleBuySell(amount, formToken.type, formToken.name);
-            form.resetFields();
+            const error = await handleBuySell(amount, formToken.type, formToken.name);
+            if (!error) {
+                form.resetFields();
+            }
         }
     };
 
     const balanceFormToken = formToken.name === tokenUsdtRender.name ? balanceOfUSDT : balanceOfUSDB;
     const balanceToToken = toToken.name === tokenUsdbRender.name ? balanceOfUSDB : balanceOfUSDT;
-
     return (
         <div className="flex flex-col justify-center gap-5 mx-auto max-w-[400px]">
             <div className="px-6 py-5 border rounded-lg shadow-lg">
@@ -73,7 +76,9 @@ export function TabBuy() {
                             },
                             ({ setFieldValue }) => ({
                                 validator(_, value) {
-                                    setFieldValue("USDB", value);
+                                    setFieldValue("USDB", Number(value) > 100 ? 100 : value);
+                                    if (!balanceFormToken && value)
+                                        return Promise.reject(new Error("Balance not enough!"));
                                     return Promise.resolve();
                                 },
                             }),
@@ -87,7 +92,18 @@ export function TabBuy() {
                                 </div>
                                 <p>{`Balance: ${formatNumberPayment(balanceFormToken)}`}</p>
                             </div>
-                            <InputNumber max={101} placeholder="0" controls={false} className="!w-full" />
+                            <InputNumber
+                                onKeyPress={(event) => {
+                                    if (!/[0-9]/.test(event.key)) {
+                                        event.preventDefault();
+                                    }
+                                }}
+                                min={1}
+                                max={100}
+                                placeholder="0"
+                                controls={false}
+                                className="!w-full"
+                            />
                         </div>
                     </Form.Item>
                     <div className="flex justify-center">
@@ -106,7 +122,7 @@ export function TabBuy() {
                         <div className="flex flex-col gap-4">
                             <ButtonConnect loading={isPending} title={formToken.type} />
                             <Button
-                                onClick={() => handelMintUSDT(100)}
+                                onClick={() => handelMintUSDT(90)}
                                 type="dashed"
                                 disabled={!chain || isPending}
                                 className="!w-full !capitalize"

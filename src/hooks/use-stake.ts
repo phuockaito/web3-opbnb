@@ -16,9 +16,9 @@ import { renderTokenSusdb, renderTokenUsdb } from "@/utils";
 import { useNotification } from "./use-notification";
 
 interface ResultTokenType {
-    balance_USDB: string;
+    balance_USDB: number;
     allowance_USDB: unknown;
-    balance_SUSDB: string;
+    balance_SUSDB: number;
     allowance_SUSDB: unknown;
 }
 
@@ -87,13 +87,13 @@ export const useStake = () => {
                 const [balance_USDB, allowance_USDB, balance_SUSDB, allowance_SUSDB] = data;
                 const balanceUSDB =
                     balance_USDB.status === "success"
-                        ? new BigNumber(formatEther(balance_USDB.result as string)).decimalPlaces(5, 1).toString()
-                        : "0";
+                        ? new BigNumber(formatEther(balance_USDB.result as string)).decimalPlaces(5, 1).toNumber()
+                        : 0;
                 const allowanceUSDB = allowance_USDB.status === "success" ? allowance_USDB.result : "0";
                 const balanceSUSDB =
                     balance_SUSDB.status === "success"
-                        ? new BigNumber(formatEther(balance_SUSDB.result as string)).decimalPlaces(5, 1).toString()
-                        : "0";
+                        ? new BigNumber(formatEther(balance_SUSDB.result as string)).decimalPlaces(5, 1).toNumber()
+                        : 0;
                 const allowanceSUSDB = allowance_SUSDB.status === "success" ? allowance_SUSDB.result : "0";
                 return {
                     balance_USDB: balanceUSDB,
@@ -151,12 +151,14 @@ export const useStake = () => {
                     handleNotificationSuccess(tx, `${type} ${amount} ${uti} successfully`);
                 }
                 setLoading(false);
+                return false;
             } catch (error: any) {
                 const stringify = JSON.stringify(error, bigintReplacer);
                 const parseError = JSON.parse(stringify);
                 console.log(parseError);
                 handleNotificationError(parseError?.shortMessage);
                 setLoading(false);
+                return true;
             }
         },
         [contractAsync, TOKEN_SUSDB, publicClient, queryClient, handleNotificationSuccess, handleNotificationError]

@@ -33,12 +33,16 @@ export function TabStake() {
         if (!isAllowance) {
             const error = await handleApprove(formToken.address, toToken.address);
             if (!error) {
-                await handleStakeUnStake(amount, formToken.type, formToken.name);
-                form.resetFields();
+                const errorStakeUnStake = await handleStakeUnStake(amount, formToken.type, formToken.name);
+                if (!errorStakeUnStake) {
+                    form.resetFields();
+                }
             }
         } else {
-            await handleStakeUnStake(amount, formToken.type, formToken.name);
-            form.resetFields();
+            const error = await handleStakeUnStake(amount, formToken.type, formToken.name);
+            if (!error) {
+                form.resetFields();
+            }
         }
     };
 
@@ -69,7 +73,9 @@ export function TabStake() {
                             },
                             ({ setFieldValue }) => ({
                                 validator(_, value) {
-                                    setFieldValue("USDB", value);
+                                    setFieldValue("USDB", Number(value) > 100 ? 100 : value);
+                                    if (!balanceFormToken && value)
+                                        return Promise.reject(new Error("Balance not enough!"));
                                     return Promise.resolve();
                                 },
                             }),
@@ -83,7 +89,18 @@ export function TabStake() {
                                 </div>
                                 <p>{`Balance: ${formatNumberPayment(balanceFormToken)}`}</p>
                             </div>
-                            <InputNumber max={balanceFormToken} placeholder="0" controls={false} className="!w-full" />
+                            <InputNumber
+                                onKeyPress={(event) => {
+                                    if (!/[0-9]/.test(event.key)) {
+                                        event.preventDefault();
+                                    }
+                                }}
+                                min={1}
+                                max={100}
+                                placeholder="0"
+                                controls={false}
+                                className="!w-full"
+                            />
                         </div>
                     </Form.Item>
                     <div className="flex justify-center">

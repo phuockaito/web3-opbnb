@@ -16,9 +16,9 @@ import { renderTokenUsdb, renderTokenUsdt } from "@/utils";
 import { useNotification } from "./use-notification";
 
 interface ResultTokenType {
-    balance_USDT: string;
+    balance_USDT: number;
     allowance_USDT: unknown;
-    balance_USDB: string;
+    balance_USDB: number;
     allowance_USDB: unknown;
 }
 
@@ -88,12 +88,12 @@ export const useBuy = () => {
                 const [balance_USDT, allowance_USDT, balance_USDB, allowance_USDB] = data;
                 const balanceUSDT =
                     balance_USDT.status === "success"
-                        ? new BigNumber(formatEther(balance_USDT.result as string)).decimalPlaces(5, 1).toString()
-                        : "0";
+                        ? new BigNumber(formatEther(balance_USDT.result as string)).decimalPlaces(5, 1).toNumber()
+                        : 0;
                 const balanceUSDB =
                     balance_USDB.status === "success"
-                        ? new BigNumber(formatEther(balance_USDB.result as string)).decimalPlaces(5, 1).toString()
-                        : "0";
+                        ? new BigNumber(formatEther(balance_USDB.result as string)).decimalPlaces(5, 1).toNumber()
+                        : 0;
                 const allowanceUSDT = allowance_USDT.status === "success" ? allowance_USDT.result : "0";
                 const allowanceUSDB = allowance_USDB.status === "success" ? allowance_USDB.result : "0";
                 return {
@@ -157,12 +157,14 @@ export const useBuy = () => {
                     handleNotificationSuccess(tx, `${type} ${amount} ${uti} successfully`);
                 }
                 setLoading(false);
+                return false;
             } catch (error: any) {
                 const stringify = JSON.stringify(error, bigintReplacer);
                 const parseError = JSON.parse(stringify);
                 console.log(parseError);
                 handleNotificationError(parseError?.shortMessage);
                 setLoading(false);
+                return true;
             }
         },
         [
