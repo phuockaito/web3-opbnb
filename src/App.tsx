@@ -17,6 +17,9 @@ function App() {
                 size="large"
                 centered
                 defaultActiveKey="1"
+                indicator={{
+                    align: "center",
+                }}
                 items={[
                     {
                         key: "1",
