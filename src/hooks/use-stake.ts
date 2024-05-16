@@ -116,7 +116,7 @@ export const useStake = () => {
                     args: [spender, maxUint256],
                 });
                 if (tx) {
-                    await publicClient.waitForTransactionReceipt({ hash: tx });
+                    await publicClient?.waitForTransactionReceipt({ hash: tx });
                     queryClient.invalidateQueries();
                     handleNotificationSuccess(tx, "Approve successfully");
                 }
@@ -146,7 +146,7 @@ export const useStake = () => {
                     args: [quantity],
                 });
                 if (tx) {
-                    await publicClient.waitForTransactionReceipt({ hash: tx });
+                    await publicClient?.waitForTransactionReceipt({ hash: tx });
                     await queryClient.invalidateQueries();
                     handleNotificationSuccess(tx, `${type} ${amount} ${uti} successfully`);
                 }

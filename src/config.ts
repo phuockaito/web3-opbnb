@@ -15,9 +15,18 @@ import {
 } from "@rainbow-me/rainbowkit/wallets";
 import { createConfig, http } from "@wagmi/core";
 import { createClient } from "viem";
-import { arbitrumGoerli, opBNBTestnet, polygonMumbai } from "viem/chains";
+import {
+    arbitrumGoerli,
+    baseSepolia,
+    blastSepolia,
+    modeTestnet,
+    opBNBTestnet,
+    optimismGoerli,
+    zkSyncSepoliaTestnet,
+} from "viem/chains";
 
-import { iconOpBNBTestnet } from "./assets";
+import { iconModeTestnet, iconOnusTestnet, iconOpBNBTestnet, iconZkSyncSepoliaTestnet } from "@/assets";
+import { onusTestnet } from "@/chain";
 
 const connectors = connectorsForWallets(
     [
@@ -50,20 +59,30 @@ export const walletConfig = createConfig({
             ...opBNBTestnet,
             iconUrl: iconOpBNBTestnet,
         },
+        arbitrumGoerli,
+        baseSepolia,
+        blastSepolia,
         {
-            ...arbitrumGoerli,
-            rpcUrls: {
-                default: {
-                    http: ["https://arbitrum-goerli.public.blastapi.io"],
-                },
-            },
+            ...modeTestnet,
+            iconUrl: iconModeTestnet,
+        },
+        optimismGoerli,
+        {
+            ...zkSyncSepoliaTestnet,
+            iconUrl: iconZkSyncSepoliaTestnet,
         },
         {
-            ...polygonMumbai,
+            ...onusTestnet,
+            iconUrl: iconOnusTestnet,
         },
     ],
     connectors,
     client({ chain }) {
-        return createClient({ chain, transport: http() });
+        return createClient({
+            chain,
+            transport: http(undefined, {
+                retryCount: 0,
+            }),
+        });
     },
 });

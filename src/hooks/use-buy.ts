@@ -122,7 +122,7 @@ export const useBuy = () => {
                     args: [spender, maxUint256],
                 });
                 if (tx) {
-                    await publicClient.waitForTransactionReceipt({ hash: tx });
+                    await publicClient?.waitForTransactionReceipt({ hash: tx });
                     queryClient.invalidateQueries();
                     handleNotificationSuccess(tx, "Approve success");
                 }
@@ -152,7 +152,8 @@ export const useBuy = () => {
                     args: [TOKEN_USDT, amountUSDT],
                 });
                 if (tx) {
-                    await publicClient.waitForTransactionReceipt({ hash: tx });
+                    // await walletConfig.getTransactionReceipt({ hash: tx });
+                    await publicClient?.waitForTransactionReceipt({ hash: tx });
                     await queryClient.invalidateQueries();
                     handleNotificationSuccess(tx, `${type} ${amount} ${uti} successfully`);
                 }
@@ -190,7 +191,7 @@ export const useBuy = () => {
                     args: [account.address, amountUSDT],
                 });
                 if (tx) {
-                    await publicClient.waitForTransactionReceipt({ hash: tx });
+                    await publicClient?.waitForTransactionReceipt({ hash: tx });
                     await queryClient.invalidateQueries();
                     handleNotificationSuccess(tx, `Mint ${amount} USDT successfully`);
                 }
