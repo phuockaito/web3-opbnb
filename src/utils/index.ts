@@ -1,17 +1,17 @@
 import { bscTestnetToken, opBNBTestnetToken } from "@/chain-id";
-import { ChainId } from "@/constants";
+import { opBNBTestnet } from "viem/chains";
 
 export const renderTokenUsdt = (chainId: number) => {
-    if (chainId === ChainId.OP_BNB) return opBNBTestnetToken.USDT;
+    if (chainId === opBNBTestnet.id) return opBNBTestnetToken.USDT;
     return bscTestnetToken.USDT;
 };
 
 export const renderTokenUsdb = (chainId: number) => {
-    if (chainId === ChainId.OP_BNB) return opBNBTestnetToken.USDB;
+    if (chainId === opBNBTestnet.id) return opBNBTestnetToken.USDB;
     return bscTestnetToken.USDB;
 };
 
 export const renderTokenSusdb = (chainId: number) => {
-    if (chainId === ChainId.OP_BNB) return opBNBTestnetToken.SUSDB;
+    if (chainId === opBNBTestnet.id) return opBNBTestnetToken.SUSDB;
     return bscTestnetToken.SUSDB;
 };

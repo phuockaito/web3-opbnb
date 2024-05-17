@@ -5,11 +5,6 @@ export const NAME_TYPE_UN_STAKE = "Unstake";
 export const NAME_TYPE_BUY = "Buy";
 export const NAME_TYPE_SELL = "Sell";
 
-export enum ChainId {
-    OP_BNB = 5611,
-    BSC_TESTNET = 97,
-}
-
 export const formatNumberPayment = (price: number | string, minimum = 0, maximum = 0) => {
     if (!price) return 0;
     return Number(new BigNumber(price).decimalPlaces(5, 1).toString()).toLocaleString("en-US", {
