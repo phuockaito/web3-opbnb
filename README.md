@@ -1,6 +1,6 @@
 # React + TypeScript + Vite + Web 3
 
--   [Website demo](https://web3-buys-token.vercel.app/)
+-   [Website demo](https://web3-opbnb.vercel.app/)
 -   [Faucet BNB testnet](https://www.bnbchain.org/en/testnet-faucet)
 -   [Deposit BNB -> OPBNB](https://opbnb-testnet-bridge.bnbchain.org/deposit)
 
