@@ -95,6 +95,11 @@ export const useStake = () => {
                         ? new BigNumber(formatEther(balance_SUSDB.result as string)).decimalPlaces(5, 1).toNumber()
                         : 0;
                 const allowanceSUSDB = allowance_SUSDB.status === "success" ? allowance_SUSDB.result : "0";
+                if (balance_USDB.error) {
+                    const stringify = JSON.stringify(balance_USDB.error, bigintReplacer);
+                    const parseError = JSON.parse(stringify);
+                    handleNotificationError(parseError?.shortMessage);
+                }
                 return {
                     balance_USDB: balanceUSDB,
                     allowance_USDB: allowanceUSDB,

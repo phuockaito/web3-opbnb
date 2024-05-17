@@ -96,6 +96,11 @@ export const useBuy = () => {
                         : 0;
                 const allowanceUSDT = allowance_USDT.status === "success" ? allowance_USDT.result : "0";
                 const allowanceUSDB = allowance_USDB.status === "success" ? allowance_USDB.result : "0";
+                if (balance_USDT.error) {
+                    const stringify = JSON.stringify(balance_USDT.error, bigintReplacer);
+                    const parseError = JSON.parse(stringify);
+                    handleNotificationError(parseError?.shortMessage);
+                }
                 return {
                     balance_USDT: balanceUSDT,
                     allowance_USDT: allowanceUSDT,
