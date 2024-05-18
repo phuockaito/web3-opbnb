@@ -77,6 +77,7 @@ export const walletConfig = createConfig({
         },
     ],
     connectors,
+    ssr: true,
     client({ chain }) {
         return createClient({
             chain,
