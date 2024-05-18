@@ -26,6 +26,7 @@ export function TabBuy() {
         handleBuySell,
         handelMintUSDT,
         loadingMintUSDT,
+        messageError,
     } = useBuy();
     const [form] = Form.useForm();
 
@@ -58,7 +59,7 @@ export function TabBuy() {
                         : `${NAME_TYPE_SELL} ${tokenUsdbRender.name}`}
                 </h1>
                 <Form
-                    disabled={isPending}
+                    disabled={isPending || !!messageError}
                     className="!mt-5"
                     size="large"
                     form={form}
@@ -120,11 +121,16 @@ export function TabBuy() {
                     </div>
                     <Form.Item>
                         <div className="flex flex-col gap-4">
-                            <ButtonConnect loading={isPending} title={formToken.type} />
+                            <div className="flex flex-col">
+                                <ButtonConnect loading={isPending} title={formToken.type} />
+                                {messageError && (
+                                    <p className="mt-2 text-xs font-medium text-red-600">{`Error: ${messageError}`}</p>
+                                )}
+                            </div>
                             <Button
                                 onClick={() => handelMintUSDT(90)}
                                 type="dashed"
-                                disabled={!chain || isPending}
+                                disabled={!chain || isPending || !!messageError}
                                 className="!w-full !capitalize"
                                 loading={loadingMintUSDT}
                             >

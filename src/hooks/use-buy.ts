@@ -23,6 +23,7 @@ interface ResultTokenType {
 }
 
 export const useBuy = () => {
+    let messageError = "";
     const publicClient = usePublicClient({ config: walletConfig });
     const contractAsync = useWriteContract({ config: walletConfig });
     const account = useAccount();
@@ -96,10 +97,14 @@ export const useBuy = () => {
                         : 0;
                 const allowanceUSDT = allowance_USDT.status === "success" ? allowance_USDT.result : "0";
                 const allowanceUSDB = allowance_USDB.status === "success" ? allowance_USDB.result : "0";
-                if (balance_USDT.error) {
-                    const stringify = JSON.stringify(balance_USDT.error, bigintReplacer);
+
+                const filterError = data.find((i) => i.error);
+                if (filterError) {
+                    const stringify = JSON.stringify(filterError.error, bigintReplacer);
                     const parseError = JSON.parse(stringify);
-                    handleNotificationError(parseError?.shortMessage);
+                    messageError = parseError?.shortMessage;
+                } else {
+                    messageError = "";
                 }
                 return {
                     balance_USDT: balanceUSDT,
@@ -157,7 +162,6 @@ export const useBuy = () => {
                     args: [TOKEN_USDT, amountUSDT],
                 });
                 if (tx) {
-                    // await walletConfig.getTransactionReceipt({ hash: tx });
                     await publicClient?.waitForTransactionReceipt({ hash: tx });
                     await queryClient.invalidateQueries();
                     handleNotificationSuccess(tx, `${type} ${amount} ${uti} successfully`);
@@ -225,6 +229,12 @@ export const useBuy = () => {
         setArrayToken(newData.reverse());
     };
 
+    React.useEffect(() => {
+        if (messageError) {
+            handleNotificationError(messageError);
+        }
+    }, [handleNotificationError, messageError]);
+
     return {
         balanceOfUSDT: resultToken.data?.balance_USDT || 0,
         balanceOfUSDB: resultToken.data?.balance_USDB || 0,
@@ -240,5 +250,6 @@ export const useBuy = () => {
         handleBuySell,
         handleSwap,
         handelMintUSDT,
+        messageError,
     };
 };

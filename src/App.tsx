@@ -50,24 +50,24 @@ function App() {
                 }}
             >
                 <Typography.Text className="text-base text-justify">
-                    Ethena is a synthetic dollar protocol built on Ethereum that provides a crypto-native solution
-                    for money not reliant on traditional banking system infrastructure, alongside a globally
-                    accessible dollar denominated instrument - the 'Internet Bond'.
+                    Ethena is a synthetic dollar protocol built on Ethereum that provides a crypto-native solution for
+                    money not reliant on traditional banking system infrastructure, alongside a globally accessible
+                    dollar denominated instrument - the 'Internet Bond'.
                 </Typography.Text>
                 <Typography.Text className="inline-block pt-2 text-base text-justify">
-                    Ethena's synthetic dollar, USDe, provides the crypto-native, scalable solution for money
-                    achieved by delta-hedging Ethereum and Bitcoin collateral. USDe is fully-backed (subject to the
-                    discussion in the Risks section regarding events potentially resulting in loss of backing) and
-                    free to compose throughout CeFi & DeFi.
+                    Ethena's synthetic dollar, USDe, provides the crypto-native, scalable solution for money achieved by
+                    delta-hedging Ethereum and Bitcoin collateral. USDe is fully-backed (subject to the discussion in
+                    the Risks section regarding events potentially resulting in loss of backing) and free to compose
+                    throughout CeFi & DeFi.
                 </Typography.Text>
                 <Typography.Text className="inline-block pt-2 text-base text-justify">
                     USDe peg stability is supported through the use of delta hedging derivatives positions against
                     protocol-held collateral.
                 </Typography.Text>
                 <Typography.Text className="pt-2 text-base text-justify">
-                    The 'Internet Bond' combines yield derived from staked assets (e.g., staked Ethereum), to the
-                    extent used as backing assets, as well as the funding & basis spread from perpetual and futures
-                    markets, to create the first onchain crypto-native solution for money.
+                    The 'Internet Bond' combines yield derived from staked assets (e.g., staked Ethereum), to the extent
+                    used as backing assets, as well as the funding & basis spread from perpetual and futures markets, to
+                    create the first onchain crypto-native solution for money.
                 </Typography.Text>
             </Typography.Paragraph>
         </>

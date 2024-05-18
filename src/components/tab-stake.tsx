@@ -23,6 +23,7 @@ export function TabStake() {
         handleSwap,
         handleApprove,
         handleStakeUnStake,
+        messageError,
     } = useStake();
 
     const balanceFormToken = formToken.name === tokenUsdbRender.name ? balanceOfUSDB : balanceOfSUSDB;
@@ -58,7 +59,7 @@ export function TabStake() {
                     onFinish={onFinish}
                     className="!mt-5"
                     size="large"
-                    disabled={isPending}
+                    disabled={isPending || !!messageError}
                     form={form}
                     layout="vertical"
                 >
@@ -117,6 +118,9 @@ export function TabStake() {
                     </div>
                     <Form.Item>
                         <ButtonConnect loading={isPending} title={formToken.type} />
+                        {messageError && (
+                            <p className="mt-2 text-xs font-medium text-red-600">{`Error: ${messageError}`}</p>
+                        )}
                     </Form.Item>
                 </Form>
                 <p className="text-base text-center">

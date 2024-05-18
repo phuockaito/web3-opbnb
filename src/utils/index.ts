@@ -1,5 +1,6 @@
-import { bscTestnetToken, opBNBTestnetToken } from "@/chain-id";
 import { opBNBTestnet } from "viem/chains";
+
+import { bscTestnetToken, opBNBTestnetToken } from "@/chain-id";
 
 export const renderTokenUsdt = (chainId: number) => {
     if (chainId === opBNBTestnet.id) return opBNBTestnetToken.USDT;
