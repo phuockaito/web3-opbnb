@@ -184,6 +184,13 @@ export const useStake = () => {
         }
     }, [handleNotificationError, messageError]);
 
+    React.useLayoutEffect(() => {
+        if (chainId) {
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            messageError = "";
+        }
+    }, [chainId]);
+
     return {
         address: account.address,
         isPending: loading,

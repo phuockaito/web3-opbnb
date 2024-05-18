@@ -23,7 +23,7 @@ interface ResultTokenType {
 }
 
 export const useBuy = () => {
-    let messageError = "";
+    let messageError: string = "";
     const publicClient = usePublicClient({ config: walletConfig });
     const contractAsync = useWriteContract({ config: walletConfig });
     const account = useAccount();
@@ -222,6 +222,13 @@ export const useBuy = () => {
             handleNotificationError(messageError);
         }
     }, [handleNotificationError, messageError]);
+
+    React.useLayoutEffect(() => {
+        if (chainId) {
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            messageError = "";
+        }
+    }, [chainId]);
 
     return {
         balanceOfUSDT: resultToken.data?.balance_USDT || 0,
