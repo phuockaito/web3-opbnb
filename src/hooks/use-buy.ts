@@ -235,6 +235,13 @@ export const useBuy = () => {
         }
     }, [handleNotificationError, messageError]);
 
+    React.useLayoutEffect(() => {
+        if (chainId) {
+            //eslint-disable-next-line
+            messageError = "";
+        }
+    }, [chainId]);
+
     return {
         balanceOfUSDT: resultToken.data?.balance_USDT || 0,
         balanceOfUSDB: resultToken.data?.balance_USDB || 0,
