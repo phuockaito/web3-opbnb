@@ -1,10 +1,6 @@
-import { TOKEN } from "@/types";
+import type { RenderTokenType } from "@/types";
 
-interface TokenMap {
-    [key: string]: TOKEN;
-}
-
-export const bscTestnetToken: TokenMap = {
+export const bscTestnetToken: RenderTokenType = {
     SUSDB: {
         name: "SUSDB",
         address: "0x115066a4CCCCc42055147F94C38126A54f2F5ffa",
