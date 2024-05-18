@@ -12,3 +12,7 @@ export interface TOKEN {
     symbol: string;
     decimals: number;
 }
+
+export interface RenderTokenType {
+    [token_name: string]: TOKEN;
+}

@@ -18,16 +18,15 @@ export function TabStake() {
         balanceOfSUSDB,
         isPending,
         allowance,
-        tokenSusdbRender,
-        tokenUsdbRender,
+        messageError,
+        renderToken,
         handleSwap,
         handleApprove,
         handleStakeUnStake,
-        messageError,
     } = useStake();
 
-    const balanceFormToken = formToken.name === tokenUsdbRender.name ? balanceOfUSDB : balanceOfSUSDB;
-    const balanceToToken = toToken.name === tokenSusdbRender.name ? balanceOfSUSDB : balanceOfUSDB;
+    const balanceFormToken = formToken.name === renderToken["USDB"].name ? balanceOfUSDB : balanceOfSUSDB;
+    const balanceToToken = toToken.name === renderToken["SUSDB"].name ? balanceOfSUSDB : balanceOfUSDB;
 
     const onFinish = async ({ amount }: { amount: number }) => {
         const isAllowance = new BigNumber(allowance as string).isGreaterThan(new BigNumber(amount));
@@ -52,8 +51,8 @@ export function TabStake() {
             <div className="px-6 py-5 border rounded-lg shadow-lg">
                 <h1 className="text-2xl font-semibold text-center">
                     {formToken.type === NAME_TYPE_STAKE
-                        ? `${NAME_TYPE_STAKE} ${tokenUsdbRender.name}`
-                        : `${NAME_TYPE_UN_STAKE} ${tokenSusdbRender.name}`}
+                        ? `${NAME_TYPE_STAKE} ${renderToken["USDB"].name}`
+                        : `${NAME_TYPE_UN_STAKE} ${renderToken["SUSDB"].name}`}
                 </h1>
                 <Form
                     onFinish={onFinish}

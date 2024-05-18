@@ -11,7 +11,7 @@ import { abiSUSDB, abiUSDB } from "@/abi";
 import { walletConfig } from "@/config";
 import { bigintReplacer, NAME_TYPE_STAKE, NAME_TYPE_UN_STAKE } from "@/constants";
 import type { TokenType } from "@/types";
-import { renderTokenSusdb, renderTokenUsdb } from "@/utils";
+import { RENDER_TOKEN } from "@/utils";
 
 import { useNotification } from "./use-notification";
 
@@ -29,22 +29,17 @@ export const useStake = () => {
     const queryClient = useQueryClient();
     const account = useAccount();
     const chainId = useChainId();
-
-    const tokenUsdbRender = renderTokenUsdb(chainId);
-    const tokenSusdbRender = renderTokenSusdb(chainId);
-
-    const TOKEN_SUSDB = tokenSusdbRender.address;
-    const TOKEN_USDB = tokenUsdbRender.address;
+    const renderToken = RENDER_TOKEN(chainId);
 
     const token_USDB: TokenType = {
-        name: tokenUsdbRender.name,
-        address: TOKEN_USDB,
+        name: renderToken["USDB"].name,
+        address: renderToken["USDB"].address,
         type: NAME_TYPE_STAKE,
     };
 
     const token_SUSDB: TokenType = {
-        name: tokenSusdbRender.name,
-        address: TOKEN_SUSDB,
+        name: renderToken["SUSDB"].name,
+        address: renderToken["SUSDB"].address,
         type: NAME_TYPE_UN_STAKE,
     };
 
@@ -59,27 +54,27 @@ export const useStake = () => {
         contracts: [
             {
                 abi: abiUSDB,
-                address: TOKEN_USDB,
+                address: renderToken["USDB"].address,
                 functionName: "balanceOf",
                 args: [account.address],
             },
             {
                 abi: abiUSDB,
-                address: TOKEN_USDB,
+                address: renderToken["USDB"].address,
                 functionName: "allowance",
-                args: [account.address, TOKEN_SUSDB],
+                args: [account.address, renderToken["SUSDB"].address],
             },
             {
                 abi: abiSUSDB,
-                address: TOKEN_SUSDB,
+                address: renderToken["SUSDB"].address,
                 functionName: "balanceOf",
                 args: [account.address],
             },
             {
                 abi: abiSUSDB,
-                address: TOKEN_SUSDB,
+                address: renderToken["SUSDB"].address,
                 functionName: "allowance",
-                args: [account.address, TOKEN_USDB],
+                args: [account.address, renderToken["SUSDB"].address],
             },
         ],
         query: {
@@ -149,7 +144,7 @@ export const useStake = () => {
                 setLoading(true);
                 const quantity = new BigNumber(amount).multipliedBy(new BigNumber(10).pow(18)).toString();
                 const tx = await contractAsync.writeContractAsync({
-                    address: TOKEN_SUSDB,
+                    address: renderToken["SUSDB"].address,
                     abi: abiSUSDB,
                     functionName: type.toLocaleLowerCase(),
                     args: [quantity],
@@ -170,7 +165,7 @@ export const useStake = () => {
                 return true;
             }
         },
-        [contractAsync, TOKEN_SUSDB, publicClient, queryClient, handleNotificationSuccess, handleNotificationError]
+        [contractAsync, renderToken, publicClient, queryClient, handleNotificationSuccess, handleNotificationError]
     );
 
     const allowance = React.useMemo(() => {
@@ -198,8 +193,7 @@ export const useStake = () => {
         toToken,
         resultToken,
         allowance,
-        tokenSusdbRender,
-        tokenUsdbRender,
+        renderToken,
         handleSwap,
         handleApprove,
         handleStakeUnStake,

@@ -19,8 +19,7 @@ export function TabBuy() {
         isPending,
         formToken,
         toToken,
-        tokenUsdtRender,
-        tokenUsdbRender,
+        renderToken,
         handleSwap,
         handleApprove,
         handleBuySell,
@@ -48,15 +47,15 @@ export function TabBuy() {
         }
     };
 
-    const balanceFormToken = formToken.name === tokenUsdtRender.name ? balanceOfUSDT : balanceOfUSDB;
-    const balanceToToken = toToken.name === tokenUsdbRender.name ? balanceOfUSDB : balanceOfUSDT;
+    const balanceFormToken = formToken.name === renderToken["USDT"].name ? balanceOfUSDT : balanceOfUSDB;
+    const balanceToToken = toToken.name === renderToken["USDB"].name ? balanceOfUSDB : balanceOfUSDT;
     return (
         <div className="flex flex-col justify-center gap-5 mx-auto max-w-[400px]">
             <div className="px-6 py-5 border rounded-lg shadow-lg">
                 <h1 className="text-2xl font-semibold text-center">
                     {formToken.type === NAME_TYPE_BUY
-                        ? `${NAME_TYPE_BUY} ${tokenUsdtRender.name}`
-                        : `${NAME_TYPE_SELL} ${tokenUsdbRender.name}`}
+                        ? `${NAME_TYPE_BUY} ${renderToken["USDT"].name}`
+                        : `${NAME_TYPE_SELL} ${renderToken["USDB"].name}`}
                 </h1>
                 <Form
                     disabled={isPending || !!messageError}

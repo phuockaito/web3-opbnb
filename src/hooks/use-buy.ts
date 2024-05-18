@@ -11,7 +11,7 @@ import { abiUSDB, abiUSDT } from "@/abi";
 import { walletConfig } from "@/config";
 import { bigintReplacer, NAME_TYPE_BUY, NAME_TYPE_SELL } from "@/constants";
 import type { TokenType } from "@/types";
-import { renderTokenUsdb, renderTokenUsdt } from "@/utils";
+import { RENDER_TOKEN } from "@/utils";
 
 import { useNotification } from "./use-notification";
 
@@ -30,22 +30,17 @@ export const useBuy = () => {
     const queryClient = useQueryClient();
     const { handleNotificationError, handleNotificationSuccess } = useNotification();
     const chainId = useChainId();
-
-    const tokenUsdtRender = renderTokenUsdt(chainId);
-    const tokenUsdbRender = renderTokenUsdb(chainId);
-
-    const TOKEN_USDT = tokenUsdtRender.address;
-    const TOKEN_USDB = tokenUsdbRender.address;
+    const renderToken = RENDER_TOKEN(chainId);
 
     const token_USDT: TokenType = {
-        name: tokenUsdtRender.name,
-        address: TOKEN_USDT,
+        name: renderToken["USDT"].name,
+        address: renderToken["USDT"].address,
         type: NAME_TYPE_BUY,
     };
 
     const token_USDB: TokenType = {
-        name: tokenUsdbRender.name,
-        address: TOKEN_USDB,
+        name: renderToken["USDB"].name,
+        address: renderToken["USDB"].address,
         type: NAME_TYPE_SELL,
     };
 
@@ -59,27 +54,27 @@ export const useBuy = () => {
         contracts: [
             {
                 abi: abiUSDT,
-                address: TOKEN_USDT,
+                address: renderToken["USDT"].address,
                 functionName: "balanceOf",
                 args: [account.address],
             },
             {
                 abi: abiUSDT,
-                address: TOKEN_USDT,
+                address: renderToken["USDT"].address,
                 functionName: "allowance",
-                args: [account.address, TOKEN_USDB],
+                args: [account.address, renderToken["USDB"].address],
             },
             {
                 abi: abiUSDB,
-                address: TOKEN_USDB,
+                address: renderToken["USDB"].address,
                 functionName: "balanceOf",
                 args: [account.address],
             },
             {
                 abi: abiUSDB,
-                address: TOKEN_USDB,
+                address: renderToken["USDB"].address,
                 functionName: "allowance",
-                args: [account.address, TOKEN_USDT],
+                args: [account.address, renderToken["USDT"].address],
             },
         ],
         query: {
@@ -106,6 +101,7 @@ export const useBuy = () => {
                 } else {
                     messageError = "";
                 }
+
                 return {
                     balance_USDT: balanceUSDT,
                     allowance_USDT: allowanceUSDT,
@@ -156,10 +152,10 @@ export const useBuy = () => {
                 setLoading(true);
                 const amountUSDT = new BigNumber(amount).multipliedBy(new BigNumber(10).pow(18)).toString();
                 const tx = await contractAsync.writeContractAsync({
-                    address: TOKEN_USDB,
+                    address: renderToken["USDB"].address,
                     abi: abiUSDB,
                     functionName: type.toLocaleLowerCase(),
-                    args: [TOKEN_USDT, amountUSDT],
+                    args: [renderToken["USDT"].address, amountUSDT],
                 });
                 if (tx) {
                     await publicClient?.waitForTransactionReceipt({ hash: tx });
@@ -177,15 +173,7 @@ export const useBuy = () => {
                 return true;
             }
         },
-        [
-            contractAsync,
-            TOKEN_USDB,
-            TOKEN_USDT,
-            publicClient,
-            queryClient,
-            handleNotificationSuccess,
-            handleNotificationError,
-        ]
+        [contractAsync, handleNotificationError, handleNotificationSuccess, publicClient, queryClient, renderToken]
     );
 
     const handelMintUSDT = React.useCallback(
@@ -194,7 +182,7 @@ export const useBuy = () => {
                 setLoadingMintUSDT(true);
                 const amountUSDT = new BigNumber(amount).multipliedBy(new BigNumber(10).pow(18)).toString();
                 const tx = await contractAsync.writeContractAsync({
-                    address: TOKEN_USDT,
+                    address: renderToken["USDT"].address,
                     abi: abiUSDT,
                     functionName: "mint",
                     args: [account.address, amountUSDT],
@@ -214,13 +202,13 @@ export const useBuy = () => {
             }
         },
         [
-            contractAsync,
-            TOKEN_USDT,
             account.address,
+            contractAsync,
+            handleNotificationError,
+            handleNotificationSuccess,
             publicClient,
             queryClient,
-            handleNotificationSuccess,
-            handleNotificationError,
+            renderToken,
         ]
     );
 
@@ -244,12 +232,11 @@ export const useBuy = () => {
         formToken,
         toToken,
         loadingMintUSDT,
-        tokenUsdtRender,
-        tokenUsdbRender,
         handleApprove,
         handleBuySell,
         handleSwap,
         handelMintUSDT,
         messageError,
+        renderToken,
     };
 };
