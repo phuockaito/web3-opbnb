@@ -10,7 +10,6 @@ import {
     coinbaseWallet,
     metaMaskWallet,
     rainbowWallet,
-    safeWallet,
     walletConnectWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 
@@ -18,7 +17,7 @@ export const walletConfig = connectorsForWallets(
     [
         {
             groupName: "Recommended",
-            wallets: [metaMaskWallet, walletConnectWallet, safeWallet, coinbaseWallet],
+            wallets: [metaMaskWallet, walletConnectWallet, coinbaseWallet],
         },
         {
             groupName: "Others",

@@ -5,7 +5,7 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import "@rainbow-me/rainbowkit/styles.css";
 
-import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import { lightTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
 import { opBNBTestnet } from "viem/chains";
@@ -29,7 +29,14 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <BrowserRouter>
             <WagmiProvider config={wagmiConfig}>
                 <QueryClientProvider client={queryClient}>
-                    <RainbowKitProvider coolMode initialChain={opBNBTestnet}>
+                    <RainbowKitProvider
+                        coolMode
+                        initialChain={opBNBTestnet}
+                        theme={lightTheme({
+                            borderRadius: 'medium',
+                            overlayBlur: "small"
+                        })}
+                    >
                         <Pages />
                     </RainbowKitProvider>
                 </QueryClientProvider>
