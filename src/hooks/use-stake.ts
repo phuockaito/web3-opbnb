@@ -137,7 +137,7 @@ export const useStake = () => {
     );
 
     const handleStakeUnStake = React.useCallback(
-        async (amount: number, type: string, uti: string) => {
+        async (amount: number, type: typeof NAME_TYPE_STAKE | typeof NAME_TYPE_UN_STAKE, symbol: string) => {
             try {
                 setLoading(true);
                 const quantity = new BigNumber(amount).multipliedBy(new BigNumber(10).pow(18)).toString();
@@ -150,7 +150,7 @@ export const useStake = () => {
                 if (tx) {
                     await publicClient?.waitForTransactionReceipt({ hash: tx });
                     await queryClient.invalidateQueries();
-                    handleNotificationSuccess(tx, `${type} ${amount} ${uti} successfully`);
+                    handleNotificationSuccess(tx, `${type} ${amount} ${symbol} successfully`);
                 }
                 setLoading(false);
                 return false;

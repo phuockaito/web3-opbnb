@@ -26,10 +26,12 @@ interface ResultTokenType {
 export const useBuy = () => {
     const publicClient = usePublicClient({ config: wagmiConfig });
     const contractAsync = useWriteContract({ config: wagmiConfig });
+
     const account = useAccount();
     const queryClient = useQueryClient();
-    const { handleNotificationError, handleNotificationSuccess } = useNotification();
     const chainId = useChainId();
+
+    const { handleNotificationError, handleNotificationSuccess } = useNotification();
     const renderToken = RENDER_TOKEN(chainId);
 
     const token_USDT: TokenType = {
@@ -47,6 +49,7 @@ export const useBuy = () => {
     const [loading, setLoading] = React.useState(false);
     const [loadingMintUSDT, setLoadingMintUSDT] = React.useState(false);
     const [arrayToken, setArrayToken] = React.useState<TokenType[]>([token_USDT, token_USDB]);
+
     const formToken = arrayToken[0];
     const toToken = arrayToken[1];
 
@@ -108,12 +111,12 @@ export const useBuy = () => {
         },
     });
 
-    const allowance = React.useMemo(() => {
+    const allowance: unknown = React.useMemo(() => {
         if (resultToken.status === "pending" || !resultToken.data) return 0;
         return formToken.type === NAME_TYPE_BUY ? resultToken.data.allowance_USDT : resultToken.data.balance_USDB;
     }, [formToken.type, resultToken]);
 
-    const handleApprove = React.useCallback(
+    const handleApprove: (token: Address, spender: Address) => Promise<boolean> = React.useCallback(
         async (token: Address, spender: Address) => {
             try {
                 setLoading(true);
@@ -143,7 +146,7 @@ export const useBuy = () => {
     );
 
     const handleBuySell = React.useCallback(
-        async (amount: number, type: string, uti: string) => {
+        async (amount: number, type: typeof NAME_TYPE_BUY | typeof NAME_TYPE_SELL, symbol: string) => {
             try {
                 setLoading(true);
                 const amountUSDT = new BigNumber(amount).multipliedBy(new BigNumber(10).pow(18)).toString();
@@ -156,7 +159,7 @@ export const useBuy = () => {
                 if (tx) {
                     await publicClient?.waitForTransactionReceipt({ hash: tx });
                     await queryClient.invalidateQueries();
-                    handleNotificationSuccess(tx, `${type} ${amount} ${uti} successfully`);
+                    handleNotificationSuccess(tx, `${type} ${amount} ${symbol} successfully`);
                 }
                 setLoading(false);
                 return false;

@@ -30,16 +30,17 @@ export function TabStake() {
 
     const onFinish = async ({ amount }: { amount: number }) => {
         const isAllowance = new BigNumber(allowance as string).isGreaterThan(new BigNumber(amount));
+        const type = formToken.type as typeof NAME_TYPE_STAKE | typeof NAME_TYPE_UN_STAKE;
         if (!isAllowance) {
             const error = await handleApprove(formToken.address, toToken.address);
             if (!error) {
-                const errorStakeUnStake = await handleStakeUnStake(amount, formToken.type, formToken.name);
+                const errorStakeUnStake = await handleStakeUnStake(amount, type, formToken.name);
                 if (!errorStakeUnStake) {
                     form.resetFields();
                 }
             }
         } else {
-            const error = await handleStakeUnStake(amount, formToken.type, formToken.name);
+            const error = await handleStakeUnStake(amount, type, formToken.name);
             if (!error) {
                 form.resetFields();
             }

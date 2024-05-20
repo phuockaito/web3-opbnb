@@ -31,16 +31,17 @@ export function TabBuy() {
 
     const onFinish = async ({ amount }: { amount: number }) => {
         const isAllowance = new BigNumber(allowance as string).isGreaterThan(new BigNumber(amount));
+        const type = formToken.type as typeof NAME_TYPE_BUY | typeof NAME_TYPE_SELL;
         if (!isAllowance) {
             const error = await handleApprove(formToken.address, toToken.address);
             if (!error) {
-                const errorBuySell = await handleBuySell(amount, formToken.type, formToken.name);
+                const errorBuySell = await handleBuySell(amount, type, formToken.name);
                 if (!errorBuySell) {
                     form.resetFields();
                 }
             }
         } else {
-            const error = await handleBuySell(amount, formToken.type, formToken.name);
+            const error = await handleBuySell(amount, type, formToken.name);
             if (!error) {
                 form.resetFields();
             }
