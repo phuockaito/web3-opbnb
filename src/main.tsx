@@ -30,9 +30,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             <WagmiProvider config={wagmiConfig}>
                 <QueryClientProvider client={queryClient}>
                     <RainbowKitProvider coolMode initialChain={opBNBTestnet}>
-                        <div className="max-w-6xl p-5 m-auto">
-                            <Pages />
-                        </div>
+                        <Pages />
                     </RainbowKitProvider>
                 </QueryClientProvider>
             </WagmiProvider>

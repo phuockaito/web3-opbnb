@@ -4,8 +4,10 @@ import App from "@/App";
 
 export const Pages = () => {
     return (
-        <Routes>
-            <Route path="/" element={<App />} />
-        </Routes>
+        <div className="max-w-6xl p-5 m-auto">
+            <Routes>
+                <Route path="/" element={<App />} />
+            </Routes>
+        </div>
     );
 };
