@@ -73,7 +73,7 @@ export function TabStake() {
                                 message: `Please input your ${formToken.name}!`,
                             },
                             ({ setFieldValue }) => ({
-                                validator(_, value) {
+                                validator(_, value: number) {
                                     const amount = Number(value) > 99 ? 99 : value;
                                     setFieldValue("USDB", amount);
                                     setFieldValue("amount", amount);
@@ -93,7 +93,7 @@ export function TabStake() {
                                 <p>{`Balance: ${formatNumberPayment(balanceFormToken)}`}</p>
                             </div>
                             <InputNumber
-                                onKeyPress={(event) => {
+                                onKeyPress={(event: React.KeyboardEvent<HTMLInputElement>) => {
                                     if (!/[0-9]/.test(event.key)) {
                                         event.preventDefault();
                                     }

@@ -76,7 +76,7 @@ export function TabBuy() {
                                 message: `Please input your ${formToken.name}!`,
                             },
                             ({ setFieldValue }) => ({
-                                validator(_, value) {
+                                validator(_, value: number) {
                                     const amount = Number(value) > 99 ? 99 : value;
                                     setFieldValue("USDB", amount);
                                     setFieldValue("amount", amount);
