@@ -3,6 +3,8 @@ import {
     arbitrumGoerli,
     baseSepolia,
     blastSepolia,
+    bsc,
+    mainnet,
     modeTestnet,
     opBNBTestnet,
     optimismGoerli,
@@ -12,7 +14,7 @@ import {
 import { iconModeTestnet, iconOpBNBTestnet, iconZkSyncSepoliaTestnet } from "@/assets";
 import { onusTestnet } from "@/chain";
 
-export const chainTestnet: [Chain, ...Chain[]] = [
+export const chainConfig: [Chain, ...Chain[]] = [
     {
         ...opBNBTestnet,
         iconUrl: iconOpBNBTestnet,
@@ -21,7 +23,7 @@ export const chainTestnet: [Chain, ...Chain[]] = [
         ...arbitrumGoerli,
         rpcUrls: {
             default: {
-                http: ['https://arbitrum-goerli.public.blastapi.io'],
+                http: ["https://arbitrum-goerli.public.blastapi.io"],
             },
         },
     },
@@ -35,7 +37,7 @@ export const chainTestnet: [Chain, ...Chain[]] = [
         ...optimismGoerli,
         rpcUrls: {
             default: {
-                http: ['https://optimism-goerli.public.blastapi.io'],
+                http: ["https://optimism-goerli.public.blastapi.io"],
             },
         },
     },
@@ -44,4 +46,6 @@ export const chainTestnet: [Chain, ...Chain[]] = [
         iconUrl: iconZkSyncSepoliaTestnet,
     },
     onusTestnet,
+    mainnet,
+    bsc,
 ];

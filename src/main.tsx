@@ -11,9 +11,8 @@ import { BrowserRouter } from "react-router-dom";
 import { opBNBTestnet } from "viem/chains";
 import { WagmiProvider } from "wagmi";
 
-import { Pages } from "@/pages";
-
 import { wagmiConfig } from "@/config";
+import { Pages } from "@/pages";
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -33,8 +32,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                         coolMode
                         initialChain={opBNBTestnet}
                         theme={lightTheme({
-                            borderRadius: 'medium',
-                            overlayBlur: "small"
+                            borderRadius: "medium",
+                            overlayBlur: "small",
                         })}
                     >
                         <Pages />

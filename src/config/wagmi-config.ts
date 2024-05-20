@@ -1,12 +1,12 @@
+import { Chain } from "@rainbow-me/rainbowkit";
 import { createClient, http } from "viem";
 import { createConfig } from "wagmi";
 
-import { chainTestnet } from "@/chain/chain-testnet";
-
+import { chainConfig } from "./chains-config";
 import { walletConfig } from "./wallet-config";
 
 export const wagmiConfig = createConfig({
-    chains: chainTestnet,
+    chains: chainConfig.filter((i: Chain) => i.testnet) as [Chain, ...Chain[]],
     connectors: walletConfig,
     ssr: true,
     multiInjectedProviderDiscovery: false,
