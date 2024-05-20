@@ -17,14 +17,28 @@ export const chainTestnet: [Chain, ...Chain[]] = [
         ...opBNBTestnet,
         iconUrl: iconOpBNBTestnet,
     },
-    arbitrumGoerli,
+    {
+        ...arbitrumGoerli,
+        rpcUrls: {
+            default: {
+                http: ['https://arbitrum-goerli.public.blastapi.io'],
+            },
+        },
+    },
     baseSepolia,
     blastSepolia,
     {
         ...modeTestnet,
         iconUrl: iconModeTestnet,
     },
-    optimismGoerli,
+    {
+        ...optimismGoerli,
+        rpcUrls: {
+            default: {
+                http: ['https://optimism-goerli.public.blastapi.io'],
+            },
+        },
+    },
     {
         ...zkSyncSepoliaTestnet,
         iconUrl: iconZkSyncSepoliaTestnet,
