@@ -30,18 +30,17 @@ export function TabBuy() {
     const [form] = Form.useForm();
 
     const onFinish = async ({ amount }: { amount: number }) => {
-        const quantity = amount > 100 ? 99 : amount
-        const isAllowance = new BigNumber(allowance as string).isGreaterThan(new BigNumber(quantity));
+        const isAllowance = new BigNumber(allowance as string).isGreaterThan(new BigNumber(amount));
         if (!isAllowance) {
             const error = await handleApprove(formToken.address, toToken.address);
             if (!error) {
-                const errorBuySell = await handleBuySell(quantity, formToken.type, formToken.name);
+                const errorBuySell = await handleBuySell(amount, formToken.type, formToken.name);
                 if (!errorBuySell) {
                     form.resetFields();
                 }
             }
         } else {
-            const error = await handleBuySell(quantity, formToken.type, formToken.name);
+            const error = await handleBuySell(amount, formToken.type, formToken.name);
             if (!error) {
                 form.resetFields();
             }
@@ -77,7 +76,9 @@ export function TabBuy() {
                             },
                             ({ setFieldValue }) => ({
                                 validator(_, value) {
-                                    setFieldValue("USDB", Number(value) > 99 ? 99 : value);
+                                    const amount = Number(value) > 99 ? 99 : value;
+                                    setFieldValue("USDB", amount);
+                                    setFieldValue("amount", amount);
                                     if (!balanceFormToken && value)
                                         return Promise.reject(new Error("Balance not enough!"));
                                     return Promise.resolve();
