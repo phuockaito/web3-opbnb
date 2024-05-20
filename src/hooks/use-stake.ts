@@ -20,10 +20,10 @@ interface ResultTokenType {
     allowance_USDB: unknown;
     balance_SUSDB: number;
     allowance_SUSDB: unknown;
+    messageError: string | undefined;
 }
 
 export const useStake = () => {
-    let messageError = "";
     const publicClient = usePublicClient({ config: walletConfig });
     const contractAsync = useWriteContract({ config: walletConfig });
     const queryClient = useQueryClient();
@@ -91,19 +91,17 @@ export const useStake = () => {
                         ? new BigNumber(formatEther(balance_SUSDB.result as string)).decimalPlaces(5, 1).toNumber()
                         : 0;
                 const allowanceSUSDB = allowance_SUSDB.status === "success" ? allowance_SUSDB.result : "0";
+
                 const filterError = data.find((i) => i.error);
-                if (filterError) {
-                    const stringify = JSON.stringify(filterError.error, bigintReplacer);
-                    const parseError = JSON.parse(stringify);
-                    messageError = parseError?.shortMessage;
-                } else {
-                    messageError = "";
-                }
+                const stringify = JSON.stringify(filterError?.error || "", bigintReplacer);
+                const parseError = JSON.parse(stringify);
+
                 return {
                     balance_USDB: balanceUSDB,
                     allowance_USDB: allowanceUSDB,
                     balance_SUSDB: balanceSUSDB,
                     allowance_SUSDB: allowanceSUSDB,
+                    messageError: parseError?.shortMessage,
                 };
             },
         },
@@ -178,19 +176,6 @@ export const useStake = () => {
         setArrayToken(newData.reverse());
     };
 
-    React.useEffect(() => {
-        if (messageError) {
-            handleNotificationError(messageError);
-        }
-    }, [handleNotificationError, messageError]);
-
-    React.useLayoutEffect(() => {
-        if (chainId) {
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-            messageError = "";
-        }
-    }, [chainId]);
-
     return {
         address: account.address,
         isPending: loading,
@@ -204,6 +189,6 @@ export const useStake = () => {
         handleSwap,
         handleApprove,
         handleStakeUnStake,
-        messageError,
+        messageError: resultToken.data?.messageError,
     };
 };

@@ -20,10 +20,10 @@ interface ResultTokenType {
     allowance_USDT: unknown;
     balance_USDB: number;
     allowance_USDB: unknown;
+    messageError: string | undefined;
 }
 
 export const useBuy = () => {
-    let messageError: string = "";
     const publicClient = usePublicClient({ config: walletConfig });
     const contractAsync = useWriteContract({ config: walletConfig });
     const account = useAccount();
@@ -94,19 +94,15 @@ export const useBuy = () => {
                 const allowanceUSDB = allowance_USDB.status === "success" ? allowance_USDB.result : "0";
 
                 const filterError = data.find((i) => i.error);
-                if (filterError) {
-                    const stringify = JSON.stringify(filterError.error, bigintReplacer);
-                    const parseError = JSON.parse(stringify);
-                    messageError = parseError?.shortMessage;
-                } else {
-                    messageError = "";
-                }
+                const stringify = JSON.stringify(filterError?.error || "", bigintReplacer);
+                const parseError = JSON.parse(stringify);
 
                 return {
                     balance_USDT: balanceUSDT,
                     allowance_USDT: allowanceUSDT,
                     balance_USDB: balanceUSDB,
                     allowance_USDB: allowanceUSDB,
+                    messageError: parseError?.shortMessage,
                 };
             },
         },
@@ -211,24 +207,10 @@ export const useBuy = () => {
             renderToken,
         ]
     );
-
     const handleSwap = () => {
         const newData = [...arrayToken];
         setArrayToken(newData.reverse());
     };
-
-    React.useEffect(() => {
-        if (messageError) {
-            handleNotificationError(messageError);
-        }
-    }, [handleNotificationError, messageError]);
-
-    React.useLayoutEffect(() => {
-        if (chainId) {
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-            messageError = "";
-        }
-    }, [chainId]);
 
     return {
         balanceOfUSDT: resultToken.data?.balance_USDT || 0,
@@ -243,7 +225,7 @@ export const useBuy = () => {
         handleBuySell,
         handleSwap,
         handelMintUSDT,
-        messageError,
+        messageError: resultToken.data?.messageError,
         renderToken,
     };
 };
