@@ -29,17 +29,18 @@ export function TabStake() {
     const balanceToToken = toToken.name === renderToken["SUSDB"].name ? balanceOfSUSDB : balanceOfUSDB;
 
     const onFinish = async ({ amount }: { amount: number }) => {
-        const isAllowance = new BigNumber(allowance as string).isGreaterThan(new BigNumber(amount));
+        const quantity = amount > 100 ? 99 : amount
+        const isAllowance = new BigNumber(allowance as string).isGreaterThan(new BigNumber(quantity));
         if (!isAllowance) {
             const error = await handleApprove(formToken.address, toToken.address);
             if (!error) {
-                const errorStakeUnStake = await handleStakeUnStake(amount, formToken.type, formToken.name);
+                const errorStakeUnStake = await handleStakeUnStake(quantity, formToken.type, formToken.name);
                 if (!errorStakeUnStake) {
                     form.resetFields();
                 }
             }
         } else {
-            const error = await handleStakeUnStake(amount, formToken.type, formToken.name);
+            const error = await handleStakeUnStake(quantity, formToken.type, formToken.name);
             if (!error) {
                 form.resetFields();
             }

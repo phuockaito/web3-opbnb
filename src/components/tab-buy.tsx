@@ -30,17 +30,18 @@ export function TabBuy() {
     const [form] = Form.useForm();
 
     const onFinish = async ({ amount }: { amount: number }) => {
-        const isAllowance = new BigNumber(allowance as string).isGreaterThan(new BigNumber(amount));
+        const quantity = amount > 100 ? 99 : amount
+        const isAllowance = new BigNumber(allowance as string).isGreaterThan(new BigNumber(quantity));
         if (!isAllowance) {
             const error = await handleApprove(formToken.address, toToken.address);
             if (!error) {
-                const errorBuySell = await handleBuySell(amount, formToken.type, formToken.name);
+                const errorBuySell = await handleBuySell(quantity, formToken.type, formToken.name);
                 if (!errorBuySell) {
                     form.resetFields();
                 }
             }
         } else {
-            const error = await handleBuySell(amount, formToken.type, formToken.name);
+            const error = await handleBuySell(quantity, formToken.type, formToken.name);
             if (!error) {
                 form.resetFields();
             }
