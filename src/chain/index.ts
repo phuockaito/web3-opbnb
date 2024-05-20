@@ -1,4 +1,6 @@
-import { Chain } from "viem";
+import { Chain } from "@rainbow-me/rainbowkit";
+
+import { iconOnusTestnet } from "@/assets";
 
 export const onusTestnet: Chain = {
     id: 1945,
@@ -19,4 +21,5 @@ export const onusTestnet: Chain = {
         },
     },
     testnet: true,
+    iconUrl: iconOnusTestnet,
 };
