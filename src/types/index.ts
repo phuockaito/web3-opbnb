@@ -1,5 +1,6 @@
-import { NAME_TYPE_BUY, NAME_TYPE_SELL, NAME_TYPE_STAKE, NAME_TYPE_UN_STAKE } from "@/constants";
 import type { Address } from "viem";
+
+import { NAME_TYPE_BUY, NAME_TYPE_SELL, NAME_TYPE_STAKE, NAME_TYPE_UN_STAKE } from "@/constants";
 
 export interface TokenType {
     name: string;

@@ -19,6 +19,6 @@ export const onusTestnetToken: RenderTokenType = {
         symbol: "USDT",
         decimals: 18,
     },
-};
+} as const;
 
 export default onusTestnetToken;

@@ -22,4 +22,4 @@ export const onusTestnet: Chain = {
     },
     testnet: true,
     iconUrl: iconOnusTestnet,
-};
+} as const;

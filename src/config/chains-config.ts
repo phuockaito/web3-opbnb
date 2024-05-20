@@ -48,4 +48,4 @@ export const chainConfig: [Chain, ...Chain[]] = [
     onusTestnet,
     mainnet,
     bsc,
-];
+] as const;
