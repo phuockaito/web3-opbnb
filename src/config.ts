@@ -8,10 +8,10 @@ import {
     bloomWallet,
     coin98Wallet,
     coinbaseWallet,
-    injectedWallet,
     rainbowWallet,
     safeWallet,
     walletConnectWallet,
+    metaMaskWallet
 } from "@rainbow-me/rainbowkit/wallets";
 import { createConfig, http } from "@wagmi/core";
 import { createClient } from "viem";
@@ -32,7 +32,7 @@ const connectors = connectorsForWallets(
     [
         {
             groupName: "Recommended",
-            wallets: [rainbowWallet, walletConnectWallet, injectedWallet, safeWallet, coinbaseWallet],
+            wallets: [metaMaskWallet, walletConnectWallet, safeWallet, coinbaseWallet],
         },
         {
             groupName: "Others",
@@ -44,6 +44,7 @@ const connectors = connectorsForWallets(
                 bitverseWallet,
                 bloomWallet,
                 coin98Wallet,
+                rainbowWallet
             ],
         },
     ],
@@ -78,6 +79,8 @@ export const walletConfig = createConfig({
     ],
     connectors,
     ssr: true,
+    multiInjectedProviderDiscovery: false,
+
     client({ chain }) {
         return createClient({
             chain,
