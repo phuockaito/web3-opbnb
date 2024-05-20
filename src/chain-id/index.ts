@@ -2,6 +2,7 @@ import type { RenderTokenType } from "@/types";
 
 export * from "./5611";
 export * from "./97";
+export * from "./1945";
 
 export const getTokenChainId = async (chainId: number): Promise<RenderTokenType> => {
     try {

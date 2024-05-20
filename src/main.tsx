@@ -13,7 +13,7 @@ import { WagmiProvider } from "wagmi";
 
 import { Pages } from "@/pages";
 
-import { wagmiConfig } from "./config";
+import { wagmiConfig } from "@/config";
 
 const queryClient = new QueryClient({
     defaultOptions: {
