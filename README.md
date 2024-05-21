@@ -1,5 +1,7 @@
 # React + TypeScript + Vite + Web 3
 
+#### Node version: v20.11.0
+
 -   [Website demo](https://web3-opbnb.vercel.app/)
 -   [Faucet BNB testnet](https://www.bnbchain.org/en/testnet-faucet)
 -   [Deposit BNB -> OPBNB](https://opbnb-testnet-bridge.bnbchain.org/deposit)
