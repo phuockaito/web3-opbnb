@@ -29,7 +29,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             <WagmiProvider config={wagmiConfig}>
                 <QueryClientProvider client={queryClient}>
                     <RainbowKitProvider
-                        coolMode
                         initialChain={opBNBTestnet}
                         theme={lightTheme({
                             borderRadius: "medium",
