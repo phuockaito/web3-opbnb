@@ -9,7 +9,7 @@ import { useAccount, useChainId, usePublicClient, useReadContracts, useWriteCont
 
 import { abiUSDB, abiUSDT } from "@/abi";
 import { wagmiConfig } from "@/config";
-import { bigintReplacer, NAME_TYPE_BUY, NAME_TYPE_SELL } from "@/constants";
+import { bigintReplacer, NAME_METHOD_BUY, NAME_METHOD_SELL } from "@/constants";
 import type { TokenType } from "@/types";
 import { RENDER_TOKEN } from "@/utils";
 
@@ -37,13 +37,13 @@ export const useBuy = () => {
     const token_USDT: TokenType = {
         name: renderToken["USDT"].name,
         address: renderToken["USDT"].address,
-        type: NAME_TYPE_BUY,
+        method: NAME_METHOD_BUY,
     };
 
     const token_USDB: TokenType = {
         name: renderToken["USDB"].name,
         address: renderToken["USDB"].address,
-        type: NAME_TYPE_SELL,
+        method: NAME_METHOD_SELL,
     };
 
     const [loading, setLoading] = React.useState(false);
@@ -113,8 +113,8 @@ export const useBuy = () => {
 
     const allowance: unknown = React.useMemo(() => {
         if (resultToken.status === "pending" || !resultToken.data) return 0;
-        return formToken.type === NAME_TYPE_BUY ? resultToken.data.allowance_USDT : resultToken.data.balance_USDB;
-    }, [formToken.type, resultToken]);
+        return formToken.method === NAME_METHOD_BUY ? resultToken.data.allowance_USDT : resultToken.data.balance_USDB;
+    }, [formToken.method, resultToken]);
 
     const handleApprove: (token: Address, spender: Address) => Promise<boolean> = React.useCallback(
         async (token: Address, spender: Address) => {
@@ -146,20 +146,20 @@ export const useBuy = () => {
     );
 
     const handleBuySell = React.useCallback(
-        async (amount: number, type: typeof NAME_TYPE_BUY | typeof NAME_TYPE_SELL, symbol: string) => {
+        async (amount: number, method: typeof NAME_METHOD_BUY | typeof NAME_METHOD_SELL, symbol: string) => {
             try {
                 setLoading(true);
                 const amountUSDT = new BigNumber(amount).multipliedBy(new BigNumber(10).pow(18)).toString();
                 const tx = await contractAsync.writeContractAsync({
                     address: renderToken["USDB"].address,
                     abi: abiUSDB,
-                    functionName: type.toLocaleLowerCase(),
+                    functionName: method.toLocaleLowerCase(),
                     args: [renderToken["USDT"].address, amountUSDT],
                 });
                 if (tx) {
                     await publicClient?.waitForTransactionReceipt({ hash: tx });
                     await queryClient.invalidateQueries();
-                    handleNotificationSuccess(tx, `${type} ${amount} ${symbol} successfully`);
+                    handleNotificationSuccess(tx, `${method} ${amount} ${symbol} successfully`);
                 }
                 setLoading(false);
                 return false;

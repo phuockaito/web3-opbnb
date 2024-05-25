@@ -2,7 +2,7 @@ import { Button, Form, InputNumber } from "antd";
 import BigNumber from "bignumber.js";
 import { useAccount } from "wagmi";
 
-import { formatNumberPayment, NAME_TYPE_BUY, NAME_TYPE_SELL } from "@/constants";
+import { formatNumberPayment, NAME_METHOD_BUY, NAME_METHOD_SELL } from "@/constants";
 import { useBuy } from "@/hooks";
 
 import { ButtonConnect } from "./button-connect";
@@ -31,17 +31,17 @@ export function TabBuy() {
 
     const onFinish = async ({ amount }: { amount: number }) => {
         const isAllowance = new BigNumber(allowance as string).isGreaterThan(new BigNumber(amount));
-        const type = formToken.type as typeof NAME_TYPE_BUY | typeof NAME_TYPE_SELL;
+        const method = formToken.method as typeof NAME_METHOD_BUY | typeof NAME_METHOD_SELL;
         if (!isAllowance) {
             const error = await handleApprove(formToken.address, toToken.address);
             if (!error) {
-                const errorBuySell = await handleBuySell(amount, type, formToken.name);
+                const errorBuySell = await handleBuySell(amount, method, formToken.name);
                 if (!errorBuySell) {
                     form.resetFields();
                 }
             }
         } else {
-            const error = await handleBuySell(amount, type, formToken.name);
+            const error = await handleBuySell(amount, method, formToken.name);
             if (!error) {
                 form.resetFields();
             }
@@ -54,9 +54,9 @@ export function TabBuy() {
         <div className="flex flex-col justify-center gap-5 mx-auto max-w-[400px]">
             <div className="px-6 py-5 border rounded-lg shadow-lg">
                 <h1 className="text-2xl font-semibold text-center">
-                    {formToken.type === NAME_TYPE_BUY
-                        ? `${NAME_TYPE_BUY} ${renderToken["USDT"].name}`
-                        : `${NAME_TYPE_SELL} ${renderToken["USDB"].name}`}
+                    {formToken.method === NAME_METHOD_BUY
+                        ? `${NAME_METHOD_BUY} ${renderToken["USDT"].name}`
+                        : `${NAME_METHOD_SELL} ${renderToken["USDB"].name}`}
                 </h1>
                 <Form
                     disabled={isPending || !!messageError}
@@ -124,7 +124,7 @@ export function TabBuy() {
                     <Form.Item>
                         <div className="flex flex-col gap-4">
                             <div className="flex flex-col">
-                                <ButtonConnect loading={isPending} title={formToken.type} />
+                                <ButtonConnect loading={isPending} title={formToken.method} />
                                 {messageError && (
                                     <p className="mt-2 text-xs font-medium text-red-600">{`Error: ${messageError}`}</p>
                                 )}

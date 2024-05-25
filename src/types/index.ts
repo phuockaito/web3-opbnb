@@ -1,11 +1,11 @@
 import type { Address } from "viem";
 
-import { NAME_TYPE_BUY, NAME_TYPE_SELL, NAME_TYPE_STAKE, NAME_TYPE_UN_STAKE } from "@/constants";
+import { NAME_METHOD_BUY, NAME_METHOD_SELL, NAME_METHOD_STAKE, NAME_METHOD_UN_STAKE } from "@/constants";
 
 export interface TokenType {
     name: string;
     address: Address;
-    type: typeof NAME_TYPE_STAKE | typeof NAME_TYPE_UN_STAKE | typeof NAME_TYPE_BUY | typeof NAME_TYPE_SELL;
+    method: typeof NAME_METHOD_STAKE | typeof NAME_METHOD_UN_STAKE | typeof NAME_METHOD_BUY | typeof NAME_METHOD_SELL;
 }
 
 export interface TOKEN {

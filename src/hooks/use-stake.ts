@@ -9,7 +9,7 @@ import { useAccount, useChainId, usePublicClient, useReadContracts, useWriteCont
 
 import { abiSUSDB, abiUSDB } from "@/abi";
 import { wagmiConfig } from "@/config";
-import { bigintReplacer, NAME_TYPE_STAKE, NAME_TYPE_UN_STAKE } from "@/constants";
+import { bigintReplacer, NAME_METHOD_STAKE, NAME_METHOD_UN_STAKE } from "@/constants";
 import type { TokenType } from "@/types";
 import { RENDER_TOKEN } from "@/utils";
 
@@ -34,13 +34,13 @@ export const useStake = () => {
     const token_USDB: TokenType = {
         name: renderToken["USDB"].name,
         address: renderToken["USDB"].address,
-        type: NAME_TYPE_STAKE,
+        method: NAME_METHOD_STAKE,
     };
 
     const token_SUSDB: TokenType = {
         name: renderToken["SUSDB"].name,
         address: renderToken["SUSDB"].address,
-        type: NAME_TYPE_UN_STAKE,
+        method: NAME_METHOD_UN_STAKE,
     };
 
     const [arrayToken, setArrayToken] = React.useState<TokenType[]>([token_USDB, token_SUSDB]);
@@ -137,20 +137,20 @@ export const useStake = () => {
     );
 
     const handleStakeUnStake = React.useCallback(
-        async (amount: number, type: typeof NAME_TYPE_STAKE | typeof NAME_TYPE_UN_STAKE, symbol: string) => {
+        async (amount: number, method: typeof NAME_METHOD_STAKE | typeof NAME_METHOD_UN_STAKE, symbol: string) => {
             try {
                 setLoading(true);
                 const quantity = new BigNumber(amount).multipliedBy(new BigNumber(10).pow(18)).toString();
                 const tx = await contractAsync.writeContractAsync({
                     address: renderToken["SUSDB"].address,
                     abi: abiSUSDB,
-                    functionName: type.toLocaleLowerCase(),
+                    functionName: method.toLocaleLowerCase(),
                     args: [quantity],
                 });
                 if (tx) {
                     await publicClient?.waitForTransactionReceipt({ hash: tx });
                     await queryClient.invalidateQueries();
-                    handleNotificationSuccess(tx, `${type} ${amount} ${symbol} successfully`);
+                    handleNotificationSuccess(tx, `${method} ${amount} ${symbol} successfully`);
                 }
                 setLoading(false);
                 return false;
@@ -168,8 +168,10 @@ export const useStake = () => {
 
     const allowance = React.useMemo(() => {
         if (resultToken.status === "pending" || !resultToken.data) return 0;
-        return formToken.type === NAME_TYPE_STAKE ? resultToken.data.allowance_USDB : resultToken.data.allowance_SUSDB;
-    }, [formToken.type, resultToken]);
+        return formToken.method === NAME_METHOD_STAKE
+            ? resultToken.data.allowance_USDB
+            : resultToken.data.allowance_SUSDB;
+    }, [formToken.method, resultToken]);
 
     const handleSwap = () => {
         const newData = [...arrayToken];

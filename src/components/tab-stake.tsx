@@ -1,7 +1,7 @@
 import { Form, InputNumber } from "antd";
 import BigNumber from "bignumber.js";
 
-import { formatNumberPayment, NAME_TYPE_STAKE, NAME_TYPE_UN_STAKE } from "@/constants";
+import { formatNumberPayment, NAME_METHOD_STAKE, NAME_METHOD_UN_STAKE } from "@/constants";
 import { useStake } from "@/hooks";
 
 import { ButtonConnect } from "./button-connect";
@@ -30,17 +30,17 @@ export function TabStake() {
 
     const onFinish = async ({ amount }: { amount: number }) => {
         const isAllowance = new BigNumber(allowance as string).isGreaterThan(new BigNumber(amount));
-        const type = formToken.type as typeof NAME_TYPE_STAKE | typeof NAME_TYPE_UN_STAKE;
+        const method = formToken.method as typeof NAME_METHOD_STAKE | typeof NAME_METHOD_UN_STAKE;
         if (!isAllowance) {
             const error = await handleApprove(formToken.address, toToken.address);
             if (!error) {
-                const errorStakeUnStake = await handleStakeUnStake(amount, type, formToken.name);
+                const errorStakeUnStake = await handleStakeUnStake(amount, method, formToken.name);
                 if (!errorStakeUnStake) {
                     form.resetFields();
                 }
             }
         } else {
-            const error = await handleStakeUnStake(amount, type, formToken.name);
+            const error = await handleStakeUnStake(amount, method, formToken.name);
             if (!error) {
                 form.resetFields();
             }
@@ -51,9 +51,9 @@ export function TabStake() {
         <div className="flex flex-col justify-center gap-5 mx-auto max-w-[400px]">
             <div className="px-6 py-5 border rounded-lg shadow-lg">
                 <h1 className="text-2xl font-semibold text-center">
-                    {formToken.type === NAME_TYPE_STAKE
-                        ? `${NAME_TYPE_STAKE} ${renderToken["USDB"].name}`
-                        : `${NAME_TYPE_UN_STAKE} ${renderToken["SUSDB"].name}`}
+                    {formToken.method === NAME_METHOD_STAKE
+                        ? `${NAME_METHOD_STAKE} ${renderToken["USDB"].name}`
+                        : `${NAME_METHOD_UN_STAKE} ${renderToken["SUSDB"].name}`}
                 </h1>
                 <Form
                     onFinish={onFinish}
@@ -119,7 +119,7 @@ export function TabStake() {
                         </Form.Item>
                     </div>
                     <Form.Item>
-                        <ButtonConnect loading={isPending} title={formToken.type} />
+                        <ButtonConnect loading={isPending} title={formToken.method} />
                         {messageError && (
                             <p className="mt-2 text-xs font-medium text-red-600">{`Error: ${messageError}`}</p>
                         )}

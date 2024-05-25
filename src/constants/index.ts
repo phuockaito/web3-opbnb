@@ -1,9 +1,9 @@
 import BigNumber from "bignumber.js";
 
-export const NAME_TYPE_STAKE = "Stake";
-export const NAME_TYPE_UN_STAKE = "Unstake";
-export const NAME_TYPE_BUY = "Buy";
-export const NAME_TYPE_SELL = "Sell";
+export const NAME_METHOD_STAKE = "Stake";
+export const NAME_METHOD_UN_STAKE = "Unstake";
+export const NAME_METHOD_BUY = "Buy";
+export const NAME_METHOD_SELL = "Sell";
 
 export const formatNumberPayment = (price: number | string, minimum = 0, maximum = 0) => {
     if (!price) return 0;
