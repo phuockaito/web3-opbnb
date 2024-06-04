@@ -1,6 +1,8 @@
-import { Chain } from "@rainbow-me/rainbowkit";
-import { createClient, http } from "viem";
 import { createConfig } from "wagmi";
+
+import { createClient, http } from "viem";
+
+import { Chain } from "@rainbow-me/rainbowkit";
 
 import { chainConfig } from "./chains-config";
 import { walletConfig } from "./wallet-config";

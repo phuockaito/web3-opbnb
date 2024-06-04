@@ -5,12 +5,16 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import "@rainbow-me/rainbowkit/styles.css";
 
+import { BrowserRouter } from "react-router-dom";
+
+import { WagmiProvider } from "wagmi";
+
+import { opBNBTestnet } from "viem/chains";
+
 import { lightTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Analytics } from "@vercel/analytics/react";
-import { BrowserRouter } from "react-router-dom";
-import { opBNBTestnet } from "viem/chains";
-import { WagmiProvider } from "wagmi";
 
 import { wagmiConfig } from "@/config";
 import { Pages } from "@/pages";

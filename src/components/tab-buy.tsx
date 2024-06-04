@@ -1,6 +1,7 @@
+import { useAccount } from "wagmi";
+
 import { Button, Form, InputNumber } from "antd";
 import BigNumber from "bignumber.js";
-import { useAccount } from "wagmi";
 
 import { formatNumberPayment, NAME_METHOD_BUY, NAME_METHOD_SELL } from "@/constants";
 import { useBuy } from "@/hooks";

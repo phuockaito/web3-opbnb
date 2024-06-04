@@ -13,11 +13,17 @@ import {
     walletConnectWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 
+import { socialNetworkConfig } from "./social-network-config";
+
 export const walletConfig = connectorsForWallets(
     [
         {
             groupName: "Recommended",
             wallets: [metaMaskWallet, walletConnectWallet, coinbaseWallet],
+        },
+        {
+            groupName: "Social network",
+            wallets: [socialNetworkConfig],
         },
         {
             groupName: "Others",

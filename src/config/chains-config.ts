@@ -1,4 +1,3 @@
-import { Chain } from "@rainbow-me/rainbowkit";
 import {
     arbitrumGoerli,
     baseSepolia,
@@ -10,6 +9,8 @@ import {
     optimismGoerli,
     zkSyncSepoliaTestnet,
 } from "viem/chains";
+
+import { Chain } from "@rainbow-me/rainbowkit";
 
 import { iconModeTestnet, iconOpBNBTestnet, iconZkSyncSepoliaTestnet } from "@/assets";
 import { onusTestnet } from "@/chain";

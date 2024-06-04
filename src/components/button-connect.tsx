@@ -1,6 +1,8 @@
-import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit";
-import { Button } from "antd";
 import { useAccount } from "wagmi";
+
+import { useChainModal, useConnectModal } from "@rainbow-me/rainbowkit";
+
+import { Button } from "antd";
 
 interface ButtonConnectType {
     title: string;

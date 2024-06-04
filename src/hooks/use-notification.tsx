@@ -1,7 +1,8 @@
 import React from "react";
 
-import { notification } from "antd";
 import { useAccount } from "wagmi";
+
+import { notification } from "antd";
 
 import { handleTruncateHex } from "@/constants";
 
