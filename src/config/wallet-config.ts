@@ -13,7 +13,7 @@ import {
     walletConnectWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 
-import { socialNetworkConfig } from "./social-network-config";
+import { particleGoogleWallet, particleTwitterWallet, particleWallet } from "../particle-wallet";
 
 export const walletConfig = connectorsForWallets(
     [
@@ -23,7 +23,7 @@ export const walletConfig = connectorsForWallets(
         },
         {
             groupName: "Social network",
-            wallets: [socialNetworkConfig],
+            wallets: [particleGoogleWallet, particleTwitterWallet, particleWallet],
         },
         {
             groupName: "Others",
