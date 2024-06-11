@@ -43,12 +43,12 @@ export function ProvidersRainbowKit({ children }: { children: React.ReactNode })
                     projectName: "Web3 Authorization",
                     modalBorderRadius: 16,
                 },
-                wallet: {
-                    visible: true, //show wallet entrance when connect success.
-                    customStyle: {
-                        supportChains: chainConfig,
-                    },
-                },
+                // wallet: {
+                //     visible: true, //show wallet entrance when connect success.
+                //     customStyle: {
+                //         supportChains: chainConfig,
+                //     },
+                // },
             }}
         >
             <WagmiProvider config={wagmiConfig}>
