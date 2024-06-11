@@ -4,7 +4,7 @@ import { useAccount } from "wagmi";
 
 import { notification } from "antd";
 
-import { handleTruncateHex } from "@/constants";
+import { handleTruncateHex } from "@/utils";
 
 export const useNotification = () => {
     const { chain } = useAccount();

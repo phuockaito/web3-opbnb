@@ -11,9 +11,9 @@ import { formatEther } from "ethers";
 
 import { abiUSDB, abiUSDT } from "@/abi";
 import { wagmiConfig } from "@/config";
-import { bigintReplacer, NAME_METHOD_BUY, NAME_METHOD_SELL } from "@/constants";
+import { NAME_METHOD_BUY, NAME_METHOD_SELL } from "@/constants";
 import type { TokenType } from "@/types";
-import { RENDER_TOKEN } from "@/utils";
+import { bigintReplacer, RENDER_TOKEN } from "@/utils";
 
 import { useNotification } from "./use-notification";
 

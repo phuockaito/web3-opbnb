@@ -11,9 +11,9 @@ import { formatEther } from "ethers";
 
 import { abiSUSDB, abiUSDB } from "@/abi";
 import { wagmiConfig } from "@/config";
-import { bigintReplacer, NAME_METHOD_STAKE, NAME_METHOD_UN_STAKE } from "@/constants";
+import { NAME_METHOD_STAKE, NAME_METHOD_UN_STAKE } from "@/constants";
 import type { TokenType } from "@/types";
-import { RENDER_TOKEN } from "@/utils";
+import { bigintReplacer, RENDER_TOKEN } from "@/utils";
 
 import { useNotification } from "./use-notification";
 

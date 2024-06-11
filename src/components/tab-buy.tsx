@@ -3,8 +3,9 @@ import { useAccount } from "wagmi";
 import { Button, Form, InputNumber } from "antd";
 import BigNumber from "bignumber.js";
 
-import { formatNumberPayment, NAME_METHOD_BUY, NAME_METHOD_SELL } from "@/constants";
+import { NAME_METHOD_BUY, NAME_METHOD_SELL } from "@/constants";
 import { useBuy } from "@/hooks";
+import { formatNumberPayment } from "@/utils";
 
 import { ButtonConnect } from "./button-connect";
 

@@ -1,8 +1,9 @@
 import { Form, InputNumber } from "antd";
 import BigNumber from "bignumber.js";
 
-import { formatNumberPayment, NAME_METHOD_STAKE, NAME_METHOD_UN_STAKE } from "@/constants";
+import { NAME_METHOD_STAKE, NAME_METHOD_UN_STAKE } from "@/constants";
 import { useStake } from "@/hooks";
+import { formatNumberPayment } from "@/utils";
 
 import { ButtonConnect } from "./button-connect";
 

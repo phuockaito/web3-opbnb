@@ -1,29 +1,11 @@
-import BigNumber from "bignumber.js";
+import { opBNBTestnet } from "viem/chains";
 
 export const NAME_METHOD_STAKE = "Stake";
 export const NAME_METHOD_UN_STAKE = "Unstake";
 export const NAME_METHOD_BUY = "Buy";
 export const NAME_METHOD_SELL = "Sell";
 
-export const formatNumberPayment = (price: number | string, minimum = 0, maximum = 0) => {
-    if (!price) return 0;
-    return Number(new BigNumber(price).decimalPlaces(5, 1).toString()).toLocaleString("en-US", {
-        minimumFractionDigits: minimum,
-        maximumFractionDigits: maximum,
-    });
-};
-
-export function handleTruncateHex(hexStr: string, keepFirst = 12, keepLast = 12) {
-    if (!hexStr) return;
-    if (hexStr.length < keepFirst + keepLast) {
-        throw new Error("Hexadecimal string is too short.");
-    }
-
-    const firstPart = hexStr.substring(0, keepFirst);
-    const lastPart = hexStr.substring(hexStr.length - keepLast);
-    return `${firstPart}....${lastPart}`;
-}
-
-export function bigintReplacer(_: any, value: any) {
-    return typeof value === "bigint" ? value.toString() : value;
-}
+export const INITIAL_CHAIN = opBNBTestnet;
+export const PROJECT_ID = "82b3a1a0-ecb9-47af-a03d-1bfd44694b94";
+export const CLIENT_KEY = "cdJPVDSGlMgBZgWeUnuYKC3JaQIWAIjn3Cjs6pmh";
+export const APP_ID = "b7207178-6693-45f6-97eb-8384b9fd51f7";
