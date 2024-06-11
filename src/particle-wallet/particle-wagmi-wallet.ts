@@ -1,5 +1,6 @@
 // Import necessary modules and types from external libraries
 import { getAddress, numberToHex, SwitchChainError, UserRejectedRequestError, type ProviderRpcError } from "viem";
+
 import { type ConnectParam, type EIP1193Provider } from "@particle-network/auth-core";
 import type { EVMProvider } from "@particle-network/auth-core-modal/dist/context/evmProvider";
 import { ChainNotConfiguredError, createConnector } from "@wagmi/core";
@@ -9,8 +10,8 @@ particleWagmiWallet.type = "particleWallet" as const;
 
 // Custom function to normalize chain ID
 function customNormalizeChainId(chainId: string | number): number {
-    if (typeof chainId === 'string') {
-        return parseInt(chainId, chainId.trim().substring(0, 2) === '0x' ? 16 : 10);
+    if (typeof chainId === "string") {
+        return parseInt(chainId, chainId.trim().substring(0, 2) === "0x" ? 16 : 10);
     }
     return chainId;
 }
