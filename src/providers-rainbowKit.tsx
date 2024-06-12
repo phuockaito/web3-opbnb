@@ -16,7 +16,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Analytics } from "@vercel/analytics/react";
 
 import { iconLogo } from "@/assets";
-import { chainConfig, wagmiConfig } from "@/config";
+import { wagmiConfig } from "@/config";
 
 import { APP_ID, CLIENT_KEY, INITIAL_CHAIN, PROJECT_ID } from "./constants";
 import { particleWagmiWallet } from "./particle-wallet/particle-wagmi-wallet";
@@ -42,13 +42,7 @@ export function ProvidersRainbowKit({ children }: { children: React.ReactNode })
                     logo: iconLogo,
                     projectName: "Web3 Authorization",
                     modalBorderRadius: 16,
-                },
-                // wallet: {
-                //     visible: true, //show wallet entrance when connect success.
-                //     customStyle: {
-                //         supportChains: chainConfig,
-                //     },
-                // },
+                }
             }}
         >
             <WagmiProvider config={wagmiConfig}>
