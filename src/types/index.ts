@@ -1,6 +1,6 @@
 import type { Address } from "viem";
 
-import { NAME_METHOD_BUY, NAME_METHOD_SELL, NAME_METHOD_STAKE, NAME_METHOD_UN_STAKE } from "@/constants";
+import { NAME_METHOD_BUY, NAME_METHOD_SELL, NAME_METHOD_STAKE, NAME_METHOD_UN_STAKE, NAME_TOKEN } from "@/constants";
 
 export interface TokenType {
     name: string;
@@ -15,6 +15,6 @@ export interface TOKEN {
     decimals: number;
 }
 
-export interface RenderTokenType {
-    [token_name: string]: TOKEN;
-}
+export type RenderTokenType = {
+    [K in NAME_TOKEN]: TOKEN;
+};

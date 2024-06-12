@@ -17,9 +17,9 @@ import { Analytics } from "@vercel/analytics/react";
 
 import { iconLogo } from "@/assets";
 import { wagmiConfig } from "@/config";
+import { particleWagmiWallet } from "@/particle-wallet";
 
 import { APP_ID, CLIENT_KEY, INITIAL_CHAIN, PROJECT_ID } from "./constants";
-import { particleWagmiWallet } from "@/particle-wallet";
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -42,7 +42,7 @@ export function ProvidersRainbowKit({ children }: { children: React.ReactNode })
                     logo: iconLogo,
                     projectName: "Web3 Authorization",
                     modalBorderRadius: 16,
-                }
+                },
             }}
         >
             <WagmiProvider config={wagmiConfig}>

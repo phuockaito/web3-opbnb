@@ -1,4 +1,5 @@
 import { createConnector } from "wagmi";
+
 import type { Wallet, WalletDetailsParams } from "@rainbow-me/rainbowkit";
 
 import { iconGoogle, iconParticleWallet, iconTwitter } from "@/assets";
