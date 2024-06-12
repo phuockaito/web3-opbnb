@@ -14,6 +14,7 @@ import {
 } from "@rainbow-me/rainbowkit/wallets";
 
 import { particleGoogleWallet, particleTwitterWallet, particleWallet } from "../particle-wallet";
+import { PROJECT_ID } from "@/constants";
 
 export const walletConfig = connectorsForWallets(
     [
@@ -41,6 +42,6 @@ export const walletConfig = connectorsForWallets(
     ],
     {
         appName: "My RainbowKit App",
-        projectId: "YOUR_PROJECT_ID",
+        projectId: PROJECT_ID,
     }
 );
