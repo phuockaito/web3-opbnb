@@ -14,9 +14,10 @@ import {
 import { AuthCoreContextProvider, useConnect as useParticleConnect } from "@particle-network/auth-core-modal";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Analytics } from "@vercel/analytics/react";
+import { ConfigProvider } from "antd";
 
 import { iconLogo } from "@/assets";
-import { wagmiConfig } from "@/config";
+import { themeAntd, wagmiConfig } from "@/config";
 import { particleWagmiWallet } from "@/particle-wallet";
 
 import { APP_ID, CLIENT_KEY, INITIAL_CHAIN, PROJECT_ID } from "./constants";
@@ -83,5 +84,5 @@ const SocialAuthConnect = ({ children }: { children: React.ReactNode }) => {
         };
     }, [connect, connectionStatus, disconnect]);
 
-    return <>{children}</>;
+    return <ConfigProvider theme={themeAntd}>{children}</ConfigProvider>;
 };

@@ -13,8 +13,9 @@ import {
     walletConnectWallet,
 } from "@rainbow-me/rainbowkit/wallets";
 
-import { particleGoogleWallet, particleTwitterWallet, particleWallet } from "../particle-wallet";
 import { PROJECT_ID } from "@/constants";
+
+import { particleGoogleWallet, particleTwitterWallet, particleWallet } from "../particle-wallet";
 
 export const walletConfig = connectorsForWallets(
     [
