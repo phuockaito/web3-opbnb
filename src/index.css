@@ -9,3 +9,7 @@
     padding: 0;
     font-family: "Glory", sans-serif !important;
 }
+
+.ant-notification {
+    z-index: 2247483650 !important;
+}
