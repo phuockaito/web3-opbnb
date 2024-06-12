@@ -27,6 +27,7 @@ export const useNotification = () => {
                         {`Tx: ${handleTruncateHex(tx)}`}
                     </a>
                 ),
+                duration: 22222222
             });
         },
         [handleTx]
