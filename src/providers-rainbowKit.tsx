@@ -19,7 +19,7 @@ import { iconLogo } from "@/assets";
 import { wagmiConfig } from "@/config";
 
 import { APP_ID, CLIENT_KEY, INITIAL_CHAIN, PROJECT_ID } from "./constants";
-import { particleWagmiWallet } from "./particle-wallet/particle-wagmi-wallet";
+import { particleWagmiWallet } from "@/particle-wallet";
 
 const queryClient = new QueryClient({
     defaultOptions: {
