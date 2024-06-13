@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import * as React from "react";
 
 import { useConnect, useDisconnect, WagmiProvider } from "wagmi";
 
@@ -14,7 +14,7 @@ import {
 import { AuthCoreContextProvider, useConnect as useParticleConnect } from "@particle-network/auth-core-modal";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Analytics } from "@vercel/analytics/react";
-import { ConfigProvider } from "antd";
+import { ConfigProvider, notification } from "antd";
 
 import { iconLogo } from "@/assets";
 import { themeAntd, wagmiConfig } from "@/config";
@@ -69,7 +69,7 @@ const SocialAuthConnect = ({ children }: { children: React.ReactNode }) => {
     const { connectionStatus } = useParticleConnect();
     const { disconnect } = useDisconnect();
 
-    useEffect(() => {
+    React.useEffect(() => {
         if (connectionStatus === "connected" && isSocialAuthType(getLatestAuthType())) {
             connect({
                 connector: particleWagmiWallet({ socialType: getLatestAuthType() as SocialAuthType }),
@@ -83,6 +83,33 @@ const SocialAuthConnect = ({ children }: { children: React.ReactNode }) => {
             particleAuth.off(AuthCoreEvent.ParticleAuthDisconnect, onDisconnect);
         };
     }, [connect, connectionStatus, disconnect]);
+
+    React.useEffect(() => {
+        const handleOnline = () => {
+            notification.success({
+                message: "Success",
+                description: "You are now online",
+                key: "success",
+                placement: "bottomRight"
+            })
+        }
+        const handleOffline = () => {
+            notification.error({
+                message: "Error",
+                description: "Please check your internet connection",
+                key: "error",
+                placement: "bottomRight"
+            })
+        }
+
+        window.addEventListener('online', handleOnline)
+        window.addEventListener('offline', handleOffline)
+
+        return () => {
+            window.removeEventListener('online', handleOnline)
+            window.removeEventListener('offline', handleOffline)
+        }
+    }, []);
 
     return <ConfigProvider theme={themeAntd}>{children}</ConfigProvider>;
 };
