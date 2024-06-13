@@ -43,6 +43,6 @@ export const walletConfig = connectorsForWallets(
     ],
     {
         appName: "My RainbowKit App",
-        projectId: PROJECT_ID,
+        projectId: "015aa01a4286450fd218f078b8da24bd",
     }
 );
