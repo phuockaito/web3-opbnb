@@ -14,6 +14,7 @@ import { Chain } from "@rainbow-me/rainbowkit";
 
 import { iconModeTestnet, iconOpBNBTestnet, iconZkSyncSepoliaTestnet } from "@/assets";
 import { onusTestnet } from "@/chain";
+import { ENVIRONMENTAL_CHAIN } from "@/constants";
 
 const chain: [Chain, ...Chain[]] = [
     {
@@ -51,4 +52,7 @@ const chain: [Chain, ...Chain[]] = [
     bsc,
 ] as const;
 
-export const chainConfig = chain.filter((i: Chain) => i.testnet) as [Chain, ...Chain[]];
+export const chainConfig = chain.filter((i: Chain) => (ENVIRONMENTAL_CHAIN ? i.testnet : !i.testnet)) as [
+    Chain,
+    ...Chain[],
+];
