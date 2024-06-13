@@ -11,6 +11,11 @@ import { Pages } from "@/pages";
 
 import { ProvidersRainbowKit } from "./providers-rainbowKit";
 
+import('buffer').then(({ Buffer }) => {
+    window.Buffer = Buffer;
+});
+
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
         <BrowserRouter>
