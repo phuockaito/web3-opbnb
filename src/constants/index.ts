@@ -3,10 +3,10 @@ import { Chain, opBNBTestnet } from "viem/chains";
 export type NAME_TOKEN_TYPE = "SUSDB" | "USDB" | "USDT";
 
 export const INITIAL_CHAIN: Chain = opBNBTestnet;
-export const NAME_METHOD_STAKE: string = "Stake";
-export const NAME_METHOD_UN_STAKE: string = "Unstake";
-export const NAME_METHOD_BUY: string = "Buy";
-export const NAME_METHOD_SELL: string = "Sell";
+export const NAME_METHOD_STAKE = "Stake";
+export const NAME_METHOD_UN_STAKE = "Unstake";
+export const NAME_METHOD_BUY = "Buy";
+export const NAME_METHOD_SELL = "Sell";
 export const ENVIRONMENTAL_CHAIN: boolean = true; // false: mainnet, true: testnet
 
 export const PROJECT_ID: string = "82b3a1a0-ecb9-47af-a03d-1bfd44694b94";
