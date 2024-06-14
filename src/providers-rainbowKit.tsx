@@ -90,25 +90,25 @@ const SocialAuthConnect = ({ children }: { children: React.ReactNode }) => {
                 message: "Success",
                 description: "You are now online",
                 key: "success",
-                placement: "bottomRight"
-            })
-        }
+                placement: "bottomRight",
+            });
+        };
         const handleOffline = () => {
             notification.error({
                 message: "Error",
                 description: "Please check your internet connection",
                 key: "error",
-                placement: "bottomRight"
-            })
-        }
+                placement: "bottomRight",
+            });
+        };
 
-        window.addEventListener('online', handleOnline)
-        window.addEventListener('offline', handleOffline)
+        window.addEventListener("online", handleOnline);
+        window.addEventListener("offline", handleOffline);
 
         return () => {
-            window.removeEventListener('online', handleOnline)
-            window.removeEventListener('offline', handleOffline)
-        }
+            window.removeEventListener("online", handleOnline);
+            window.removeEventListener("offline", handleOffline);
+        };
     }, []);
 
     return <ConfigProvider theme={themeAntd}>{children}</ConfigProvider>;
